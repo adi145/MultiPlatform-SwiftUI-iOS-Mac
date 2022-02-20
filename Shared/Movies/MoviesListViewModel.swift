@@ -9,33 +9,80 @@ import Foundation
 import OrderedCollections
 
 class MoviesListViewModel:ObservableObject {
-//    var movie1 : OrderedDictionary<String,[Movie]> = OrderedDictionary()
-    @Published var movies: OrderedDictionary<String,[Movie]> = OrderedDictionary()
-//    @Published var movies: [String: [Movie]] = [:]
+    @Published var homeMoviesList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
+    @Published var tvShowsList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
+    @Published var kidsMoviesList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
 
-    public var allCategories:[String] {
-        movies.keys.map({ String($0) })
-    }
+    var navigationItem : NavigationItem!
     
+    public var allHomeMoviesCategories:[String] {
+        switch navigationItem {
+        case .toolBarHome:
+           return homeMoviesList.keys.map({ String($0) })
+        case .toolBarTvShows:
+           return tvShowsList.keys.map({ String($0) })
+        case .toolBarMovies:
+           return homeMoviesList.keys.map({ String($0) })
+        case .toolBarKids:
+           return kidsMoviesList.keys.map({ String($0) })
+        default:
+           return homeMoviesList.keys.map({ String($0) })
+        }
+    }
+   
     public func getMovie(forCat cat: String) -> [Movie] {
-        return movies[cat] ?? []
+        switch navigationItem {
+        case .toolBarHome:
+            return homeMoviesList[cat] ?? []
+        case .toolBarTvShows:
+            return tvShowsList[cat] ?? []
+        case .toolBarMovies:
+            return homeMoviesList[cat] ?? []
+        case .toolBarKids:
+            return kidsMoviesList[cat] ?? []
+        default:
+            return homeMoviesList[cat] ?? []
+        }
     }
-    
+
     init() {
-        setupMovies()
+        self.setupMoviesHome()
+        self.setupMoviesForTVShows()
+        self.setupMoviesForKids()
     }
     
-    func setupMovies() {
-        movies["Top movies"] = exampleMovies.shuffled()
-        movies["Continu watching"] = exampleMovies.shuffled()
-        movies["Recently added movies"] = exampleMovies
-        movies["Latest movies"] = exampleMovies.shuffled()
-        movies["Crime movies"] = exampleMovies.shuffled()
-        movies["Feature previews"] = exampleMovies.shuffled()
-        movies["Web series"] = exampleMovies.shuffled()
-        movies["Bollywood movies"] = exampleMovies.shuffled()
-        movies["Tollywood movies"] = exampleMovies.shuffled()
-        movies["Kollywood movies"] = exampleMovies.shuffled()
+    func setupMoviesHome() {
+        homeMoviesList["Top movies"] = exampleMovies.shuffled()
+        homeMoviesList["Continu watching"] = exampleMovies.shuffled()
+        homeMoviesList["Recently added movies"] = exampleMovies
+        homeMoviesList["Latest movies"] = exampleMovies.shuffled()
+        homeMoviesList["Crime movies"] = exampleMovies.shuffled()
+        homeMoviesList["Feature previews"] = exampleMovies.shuffled()
+        homeMoviesList["Web series"] = exampleMovies.shuffled()
+        homeMoviesList["Bollywood movies"] = exampleMovies.shuffled()
+        homeMoviesList["Tollywood movies"] = exampleMovies.shuffled()
+        homeMoviesList["Kollywood movies"] = exampleMovies.shuffled()
+    }
+    
+    func setupMoviesForTVShows() {
+        tvShowsList["Continu watching"] = exampleMovies.shuffled()
+        tvShowsList["Amazon Original series"] = exampleMovies.shuffled()
+        tvShowsList["Amazon Original Kids series"] = exampleMovies.shuffled()
+        tvShowsList["Recently Added TV"] = exampleMovies.shuffled()
+        tvShowsList["Latest TV"] = exampleMovies.shuffled()
+        tvShowsList["Action And Advanture TV"] = exampleMovies.shuffled()
+        tvShowsList["Top TV"] = exampleMovies.shuffled()
+        tvShowsList["Thriller TV"] = exampleMovies.shuffled()
+        tvShowsList["Comdey TV"] = exampleMovies.shuffled()
+        tvShowsList["Drama TV"] = exampleMovies.shuffled()
+    }
+    
+    func setupMoviesForKids() {
+        kidsMoviesList["Watch next kids"] = exampleMovies.shuffled()
+        kidsMoviesList["Kids and family movies"] = exampleMovies.shuffled()
+        kidsMoviesList["Kids and family TV"] = exampleMovies.shuffled()
+        kidsMoviesList["Preschool kids videos"] = exampleMovies.shuffled()
+        kidsMoviesList["Amazon original kids series"] = exampleMovies.shuffled()
     }
     
 }

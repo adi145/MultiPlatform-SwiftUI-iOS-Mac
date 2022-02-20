@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct MoviesAppApp: App {
+    let userSettings = NavigationSettings()
+
     var body: some Scene {
         WindowGroup {
-            HomePage().onReceive(NotificationCenter.default.publisher(for: NSApplication.willUpdateNotification), perform: { _ in
+            HomePage()
+                .environmentObject(userSettings)
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willUpdateNotification), perform: { _ in
                 makeWindow()
             })
         }

@@ -9,34 +9,19 @@ import SwiftUI
 import Kingfisher
 
 struct MovieDetailsView: View {
-    @AppStorage("selectedAppearance") var selectedAppearance = 0
-    @Binding var moviesNavigation: NavigationItem
+    @EnvironmentObject var settings : NavigationSettings
+    var navigationItem: NavigationItem
     var movie : Movie!
     var body: some View {
         ZStack {
             VStack{
-                Button {
-                    print("Back button was tapped")
-                    moviesNavigation = .home
-                } label: {
-                    Image(systemName: "chevron.left").background(.clear)
-                }
-            }.frame(width: isMacOS() ? getRect().width : nil , height: 44, alignment: .leading)
-            .background(.black)
-            Spacer()
-//            VStack{
-//
-//                Text("Moview Details")
-//            }.onTapGesture {
-//                self.moviesNavigation = NavigationItem.home
-//            }
+                HeaderViewMac(title: "Movie Details",onBackAction: backButton, isShowBackButton: true)
+            }
         }
-//        .preferredColorScheme(selectedAppearance == 1 ? .light : selectedAppearance == 2 ? .dark : nil)
-        //.preferredColorScheme(nil)
     }
 
     func backButton() {
-        moviesNavigation = .home
+        settings.navigationItem = settings.selectedNavigationItem
     }
 }
 

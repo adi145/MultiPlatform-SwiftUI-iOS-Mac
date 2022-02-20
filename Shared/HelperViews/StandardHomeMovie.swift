@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct StandardHomeMovie: View {
-    var movie: Movie
+    var movie: Movie!
     
     var body: some View {
         VStack{
@@ -17,16 +17,6 @@ struct StandardHomeMovie: View {
             .resizable()
             .scaledToFill()
         }
-        
-//        AsyncImage(url: movie.url) { image in
-//            image
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-////                .frame(maxWidth: 220, alignment: .center)
-//        } placeholder: {
-//            ProgressView()
-//        }
-
     }
 }
 

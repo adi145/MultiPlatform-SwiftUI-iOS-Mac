@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-enum NavigationItem {
-    case home
-    case search
-    case downloads
-    case mystuff
-    case moviesDetails
-    case seeMore
-    case find
-    case myStuff
-}
-
 struct HomePage: View {
     var body: some View {
         TabViewPage()
