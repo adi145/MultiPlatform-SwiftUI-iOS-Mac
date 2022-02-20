@@ -20,7 +20,7 @@ struct TabViewPage: View {
         .tag(NavigationItem.home)
 
         NavigationView {
-            SearchView()
+            FinderView()
             .listStyle(InsetGroupedListStyle())
         }
         .tabItem {

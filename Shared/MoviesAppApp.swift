@@ -10,19 +10,37 @@ import SwiftUI
 @main
 struct MoviesAppApp: App {
     let userSettings = NavigationSettings()
-
+    
     var body: some Scene {
+       #if os(macOS)
         WindowGroup {
             HomePage()
                 .environmentObject(userSettings)
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.willUpdateNotification), perform: { _ in
-                makeWindow()
-            })
+                    makeWindow()
+                })
         }
         .commands {
             CommandGroup(replacing: .newItem, addition: {
             })
         }
+        #endif
+        WindowGroup {
+            HomePage()
+                .environmentObject(userSettings)
+        }
+    }
+    func makeWindow() {
+        #if os(macOS)
+        for window in NSApplication.shared.windows {
+            window.titleVisibility = .hidden
+            window.titlebarAppearsTransparent = true
+            window.backgroundColor = NSColor.black
+            window.standardWindowButton(NSWindow.ButtonType.zoomButton)!.isHidden = true
+            window.standardWindowButton(NSWindow.ButtonType.closeButton)!.isHidden = false
+            window.standardWindowButton(NSWindow.ButtonType.miniaturizeButton)!.isHidden = false
+        }
+       #endif
     }
 }
 extension View {
@@ -40,17 +58,6 @@ extension View {
         return false
         #endif
         return true
-    }
-}
-
-func makeWindow() {
-    for window in NSApplication.shared.windows {
-        window.titleVisibility = .hidden
-        window.titlebarAppearsTransparent = true
-        window.backgroundColor = NSColor.black
-        window.standardWindowButton(NSWindow.ButtonType.zoomButton)!.isHidden = true
-        window.standardWindowButton(NSWindow.ButtonType.closeButton)!.isHidden = false
-        window.standardWindowButton(NSWindow.ButtonType.miniaturizeButton)!.isHidden = false
     }
 }
 
