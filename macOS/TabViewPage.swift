@@ -17,7 +17,7 @@ struct TabViewPage: View {
     var body: some View {
 //        VStack{
             MoviesListView()
-            .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
+            .frame(maxWidth: isMacOS() ? getRect().width : getRect().width, maxHeight: isMacOS() ? getRect().height : getRect().height)
                     .background(ColorTheme.bgColor.color)
 //                    .transition(AnyTransition.move(edge: .leading)).animation(.default)
 //            }

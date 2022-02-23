@@ -12,10 +12,20 @@ struct MovieDetailsView: View {
     @EnvironmentObject var settings : NavigationSettings
     var navigationItem: NavigationItem
     var movie : Movie!
+   
     var body: some View {
         ZStack {
             VStack{
-                HeaderViewMac(title: "Movie Details",onBackAction: backButton, isShowBackButton: true)
+                if isMacOS(){
+                    HeaderViewMac(title: "Movie Details",onBackAction: backButton, isShowBackButton: true)
+                }
+            }
+        }.onAppear {
+            if !isMacOS() {
+                //Use this if NavigationBarTitle is with Large Font
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
+                //Use this if NavigationBarTitle is with displayMode = .inline
+                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
             }
         }
     }

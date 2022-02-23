@@ -11,6 +11,7 @@ import AVFoundation
 
 
 struct MoviesListView: View {
+    
     @EnvironmentObject var settings : NavigationSettings
     @State var selectedCategory: String?
     @State var selectedMovie: Movie?
@@ -24,24 +25,54 @@ struct MoviesListView: View {
     @State var isShowTVShowsCarousel: Bool = false
     @State var isShowMoviesCarousel: Bool = false
     @State var isShowKidsCarousel: Bool = false
-
+    
     var vm = MoviesListViewModel()
-
+    @State var topBannerItems: TopBannerItems = .home
+    
     let titleStr: String = NSLocalizedString("Movies", comment: "")
-    let homeStr: String = NSLocalizedString("Home", comment: "")
-    let findStr: String = NSLocalizedString("Find", comment: "")
-    let downloadStr: String = NSLocalizedString("Downloads", comment: "")
-    let myStuffStr: String = NSLocalizedString("MyStuff", comment: "")
+    
+    init() {
+        if !isMacOS() {
+            //Use this if NavigationBarTitle is with Large Font
+            UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
+            //Use this if NavigationBarTitle is with displayMode = .inline
+            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+        }
+    }
 
+    var navigateToMovieDetailsView : some View {
+        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem), isActive: self.$settings.isNavigateMovieDetailsScreen) { EmptyView() }
+    }
+    
+    var navigateToSeeMore : some View {
+        NavigationLink(destination: SeeMoreView(selectedCategory:self.selectedCategory ?? "", navigationItem: navigationItem, selectedMovie: $selectedMovie), isActive: self.$settings.isNavigateSeeMorePage) { EmptyView() }
+    }
+    
+    fileprivate func setupTopBannerView() -> some View {
+        return VStack{
+            switch topBannerItems {
+            case .tvshows:
+                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
+            case .movies:
+                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
+            case .kids:
+                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
+            default:
+                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
+            }
+        }
+    }
+    
     fileprivate func mainView(navigationItem:NavigationItem) -> some View {
         vm.navigationItem = navigationItem
         return ScrollView(showsIndicators: false) {
+            setupTopBannerView()
             LazyVStack {
                 ForEach(vm.allHomeMoviesCategories, id: \.self) { category in
                     VStack {
                         HStack {
                             Text(category)
-                                .font(.system(size: 20))
+                                .font(.system(size: isMacOS() ? 20 : 16))
                                 .fontWeight(.bold)
                                 .bold().padding(.leading, 10)
                             Image(systemName: "chevron.right")
@@ -49,17 +80,26 @@ struct MoviesListView: View {
                         }.foregroundColor(.white)
                             .onTapGesture {
                                 self.selectedCategory = category
+                                if isMacOS() {
                                 self.settings.navigationItem = NavigationItem.seeMore
+                                } else {
+                                    self.settings.isNavigateSeeMorePage = true
+                                }
                             }
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack {
                                 ForEach(vm.getMovie(forCat: category)) { movie in
                                     StandardHomeMovie(movie: movie)
-                                        .frame(width: 150, height: 200)
-                                        .padding(.horizontal, 5).onTapGesture {
+                                        .frame(width: isMacOS() ? 150 : (getRect().width-72)/2, height: isMacOS() ? 150 : (getRect().width-72)/3.5)
+                                        .cornerRadius(5)
+                                        .padding(.horizontal, 0).onTapGesture {
                                             self.selectedMovie = movie
+                                            if isMacOS() {
                                             self.settings.navigationItem = NavigationItem.moviesDetails
+                                            } else {
+                                                self.settings.isNavigateMovieDetailsScreen = true
+                                            }
                                         }
                                 }
                             }
@@ -67,143 +107,26 @@ struct MoviesListView: View {
                     }.foregroundColor(.white)
                 }
             }
-        }.padding([.leading, .trailing], 25)
+        }.padding([.leading, .trailing], isMacOS() ? 25 : 16)
     }
     
-    fileprivate func topToolBarButonsWithCarsouals() -> some View {
-        return VStack{
-            HStack(spacing:0){
-                Button("Home") {
-                    isShowTVShowsCarousel = false
-                    isShowMoviesCarousel = false
-                    isShowKidsCarousel = false
-                    isShowHomeCarousel = true
-                    self.settings.navigationItem = .toolBarHome
-                }.frame(width: 120, height: 38)
-                    .buttonStyle(.plain)
-                    .foregroundColor(.white)
-                    .font(.system(size: 18))
-                
-                Button("TV Shows") {
-                    isShowTVShowsCarousel = true
-                    isShowMoviesCarousel = false
-                    isShowKidsCarousel = false
-                    isShowHomeCarousel = false
-                    self.settings.navigationItem = .toolBarTvShows
-                }.frame(width: 120, height: 38)
-                    .buttonStyle(.plain)
-                    .foregroundColor(.white)
-                    .font(.system(size: 18))
-                
-                Button("Movies") {
-                    isShowTVShowsCarousel = false
-                    isShowMoviesCarousel = true
-                    isShowKidsCarousel = false
-                    isShowHomeCarousel = false
-                    self.settings.navigationItem = .toolBarMovies
-                }.frame(width: 120, height: 38)
-                    .buttonStyle(.plain)
-                    .foregroundColor(.white)
-                    .font(.system(size: 18))
-                
-                Button("Kids") {
-                    isShowTVShowsCarousel = false
-                    isShowMoviesCarousel = false
-                    isShowKidsCarousel = true
-                    isShowHomeCarousel = false
-                    self.settings.navigationItem = .toolBarKids
-                }.frame(width: 100, height: 38, alignment: .center)
-                    .buttonStyle(.plain)
-                    .foregroundColor(.white)
-                    .font(.system(size: 18))
-                
-            }.frame(width: 460, height: 38, alignment: .center)
-                .background(.clear)
-            
-            HStack(){
-                if isShowHomeCarousel{
-                    Spacer().frame(width: 90, height: 2, alignment: .center)
-                        .background(.white)
-                } else {
-                    Spacer().frame(width: 120, height: 2, alignment: .leading)
-                        .background(.white)
-                        .hidden()
-                }
-                
-                if isShowTVShowsCarousel{
-                    Spacer().frame(width: 100, height: 2, alignment: .center)
-                        .background(.white)
-                } else {
-                    Spacer().frame(width: 120, height: 2, alignment: .leading)
-                        .background(.white)
-                        .hidden()
-                }
-                
-                if isShowMoviesCarousel{
-                    Spacer().frame(width: 90, height: 2, alignment: .center)
-                        .background(.white)
-                } else {
-                    Spacer().frame(width: 120, height: 2, alignment: .leading)
-                        .background(.white)
-                        .hidden()
-                }
-                if isShowKidsCarousel{
-                    Spacer().frame(width: 80, height: 2, alignment: .center)
-                        .background(.white)
-                } else {
-                    Spacer().frame(width: 100, height: 2, alignment: .leading)
-                        .background(.white)
-                        .hidden()
-                }
-            }.frame(width: 460, height: 2, alignment: .center)
-                .background(.clear)
-                .padding([.leading,.trailing],0)
-            
-        }.frame(width: 460, height: 40, alignment: .center)
-            .background(.clear)
-    }
-    
-    func bottomToolBarView() -> some View{
-       return VStack{
-            HStack{
-                Spacer()
-                Button(action: homeAction) {
-                    Label(homeStr, systemImage: "house.fill")
-                        .foregroundColor(isHomeSelected ? .blue : .gray)
-                        .font(.system(size: 18))
-                }.buttonStyle(.plain)
-                Spacer()
-                
-                Button(action: findAction) {
-                    Label(findStr, systemImage: "magnifyingglass")
-                        .foregroundColor(isFinderSelected ? .blue : .gray)
-                        .font(.system(size: 18))
-
-                }.buttonStyle(.plain)
-    
-                Spacer()
-                Button(action: downloadAction) {
-                    Label(downloadStr, systemImage: "arrow.down.circle")
-                        .foregroundColor(isDownloadsSelected ? .blue : .gray)
-                        .font(.system(size: 18))
-
-                }.buttonStyle(.plain)
-                Spacer()
-                Button(action: myStuffAction) {
-                    Label(myStuffStr, systemImage: "person.circle.fill")
-                        .foregroundColor(isMyStuffSelected ? .blue : .gray)
-                        .font(.system(size: 18))
-                }.buttonStyle(.plain)
-                Spacer()
-            }.frame(width: isMacOS() ? getRect().width : nil , height: 40, alignment: .center)
-        }.frame(width: isMacOS() ? getRect().width : nil , height: 40, alignment: .center)
-            .background(.black)
+    fileprivate func showHeaderAndToolBar(navigationItem: NavigationItem) -> some View{
+        return VStack {
+            if isMacOS() {
+                HeaderViewMac(title: titleStr)
+            }
+            TopToolBarView(isShowHomeCarousel: $isShowHomeCarousel, isShowTVShowsCarousel: $isShowTVShowsCarousel, isShowMoviesCarousel: $isShowMoviesCarousel, isShowKidsCarousel: $isShowKidsCarousel, topBannerItems: $topBannerItems)
+            navigateToMovieDetailsView
+            navigateToSeeMore
+            mainView(navigationItem: navigationItem)
+        }
     }
     
     var body: some View {
         ZStack {
             Color.black
                 .edgesIgnoringSafeArea(.all)
+            Group{
             VStack{
                 switch settings.navigationItem {
                 case .find:
@@ -220,64 +143,26 @@ struct MoviesListView: View {
                     SeeMoreView(vm: MoviesListViewModel(), selectedCategory: selectedCategory ?? "", navigationItem: self.settings.navigationItem, selectedMovie: $selectedMovie)
                         .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
                         .background(Color.white)
-//                        .transition(AnyTransition.move(edge: .trailing)).withAnimation(.default)
                 case .moviesDetails:
                     MovieDetailsView(navigationItem: self.settings.navigationItem, movie: selectedMovie)
                         .background(Color.white)
-//                        .transition(AnyTransition.move(edge: .trailing)).animation(.default)
                 case .toolBarHome, .toolBarMovies:
-                    HeaderViewMac(title: titleStr)
-                    topToolBarButonsWithCarsouals()
-                    mainView(navigationItem: .toolBarHome)
+                    showHeaderAndToolBar(navigationItem: .home)
                 case .toolBarTvShows:
-                    HeaderViewMac(title: titleStr)
-                    topToolBarButonsWithCarsouals()
-                    mainView(navigationItem: .toolBarTvShows)
-//                case .toolBarMovies:
-//                    mainView(navigationItem: .toolBarMovies)
+                    showHeaderAndToolBar(navigationItem: .toolBarTvShows)
                 case .toolBarKids:
-                    HeaderViewMac(title: titleStr)
-                    topToolBarButonsWithCarsouals()
-                    mainView(navigationItem: .toolBarKids)
+                    showHeaderAndToolBar(navigationItem: .toolBarKids)
                 default:
-                    HeaderViewMac(title: titleStr)
-                    topToolBarButonsWithCarsouals()
-                    mainView(navigationItem: .home)
+                    showHeaderAndToolBar(navigationItem: .home)
                 }
-                bottomToolBarView()
+                if isMacOS() {
+                    BottomToolBarBottons(isHomeSelected: $isHomeSelected, isFinderSelected: $isFinderSelected, isDownloadsSelected: $isDownloadsSelected, isMyStuffSelected: $isMyStuffSelected)
+                }
             }.background(ColorTheme.bgColor.color)
-        }.background(ColorTheme.bgColor.color)
-            .onAppear(){
-                homeAction()
             }
-    }
-    
-    func homeAction() {
-        self.isHomeSelected = true
-        self.isFinderSelected = false
-        self.isDownloadsSelected = false
-        self.isMyStuffSelected = false
-        self.settings.navigationItem = .home
-    }
-    func findAction() {
-        self.isHomeSelected = false
-        self.isFinderSelected = true
-        self.isDownloadsSelected = false
-        self.isMyStuffSelected = false
-        self.settings.navigationItem = .find
-    }
-    func downloadAction() {
-        self.isHomeSelected = false
-        self.isFinderSelected = false
-        self.isDownloadsSelected = true
-        self.isMyStuffSelected = false
-        self.settings.navigationItem = .downloads
-    }
-    func myStuffAction() {
-        self.isHomeSelected = false
-        self.isFinderSelected = false
-        self.isDownloadsSelected = false
-        self.isMyStuffSelected = true
-        self.settings.navigationItem = .mystuff
+                
+        }.background(ColorTheme.bgColor.color)
+            .navigationBarTitle(Text(titleStr), displayMode: .inline)
+            .navigationBarHidden(false)
     }
 }

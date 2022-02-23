@@ -31,11 +31,13 @@ enum NavigationItem: NavigationslectedItem {
 }
 
 class NavigationSettings: ObservableObject {
-//    @Published var ishideNavigationBar : Bool = false
-//    @Published var isNavigateToSignupScreen: Bool = false
-//    @Published var isNavigateToHomeScreen: Bool = true
+    @Published var ishideNavigationBar : Bool = false
+    @Published var isNavigateToSignupScreen: Bool = false
+    @Published var isNavigateToHomeScreen: Bool = true
 //    @Published var isNavigateMovieDetailsScreen: Bool = false
-//    @Published var showActivityIndicator:Bool = false
+    @Published var showActivityIndicator:Bool = false
+    @Published var isNavigateMovieDetailsScreen: Bool = false
+    @Published var isNavigateSeeMorePage: Bool = false
     @Published var selectedNavigationItem: NavigationItem = .home
     @Published var navigationItem: NavigationItem = .home
 }

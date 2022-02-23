@@ -49,6 +49,12 @@
 		858FB16C27C0B54500332FFC /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858FB16A27C0B54500332FFC /* DownloadView.swift */; };
 		858FB16F27C0B56300332FFC /* MyStuffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858FB16E27C0B56300332FFC /* MyStuffView.swift */; };
 		858FB17027C0B56300332FFC /* MyStuffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858FB16E27C0B56300332FFC /* MyStuffView.swift */; };
+		CA90A3C627C502ED00BA7E73 /* TopToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C527C502ED00BA7E73 /* TopToolBarView.swift */; };
+		CA90A3C727C502ED00BA7E73 /* TopToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C527C502ED00BA7E73 /* TopToolBarView.swift */; };
+		CA90A3C927C5049300BA7E73 /* BottomToolBarBottons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */; };
+		CA90A3CA27C5059D00BA7E73 /* BottomToolBarBottons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */; };
+		CA90A3CC27C50CB200BA7E73 /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */; };
+		CA90A3CD27C50CB200BA7E73 /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +103,9 @@
 		858FB16A27C0B54500332FFC /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
 		858FB16E27C0B56300332FFC /* MyStuffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStuffView.swift; sourceTree = "<group>"; };
 		858FB17127C140E800332FFC /* MoviesApp--macOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "MoviesApp--macOS--Info.plist"; sourceTree = "<group>"; };
+		CA90A3C527C502ED00BA7E73 /* TopToolBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopToolBarView.swift; sourceTree = "<group>"; };
+		CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomToolBarBottons.swift; sourceTree = "<group>"; };
+		CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,13 +172,6 @@
 			path = Colors;
 			sourceTree = "<group>";
 		};
-		852EAB7F27C1DF5500F26210 /* Font */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Font;
-			sourceTree = "<group>";
-		};
 		853A6ABB27BBE64500BC47F2 = {
 			isa = PBXGroup;
 			children = (
@@ -188,7 +190,6 @@
 		853A6AC027BBE64600BC47F2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				852EAB7F27C1DF5500F26210 /* Font */,
 				852EAB7E27C1DF4B00F26210 /* Colors */,
 				852EAB7A27C1DD5800F26210 /* NavigationItem */,
 				858FB16D27C0B54A00332FFC /* MyStuff */,
@@ -258,6 +259,9 @@
 			children = (
 				853A6B0627BBF97E00BC47F2 /* StandardHomeMovie.swift */,
 				852EAB8327C1E7C400F26210 /* HeaderViewMac.swift */,
+				CA90A3C527C502ED00BA7E73 /* TopToolBarView.swift */,
+				CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */,
+				CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */,
 			);
 			path = HelperViews;
 			sourceTree = "<group>";
@@ -476,13 +480,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				852EAB7C27C1DD7800F26210 /* NavigationSettings.swift in Sources */,
+				CA90A3CC27C50CB200BA7E73 /* TopBannerView.swift in Sources */,
 				855097E227BCB5DB009AB868 /* TabViewPage.swift in Sources */,
 				858FB16727C0B51300332FFC /* FinderView.swift in Sources */,
 				852A504E27BCA06000332A9B /* HomePage.swift in Sources */,
 				855097E827BCC931009AB868 /* MovieDetailsView.swift in Sources */,
 				852EAB8427C1E7C400F26210 /* HeaderViewMac.swift in Sources */,
+				CA90A3CA27C5059D00BA7E73 /* BottomToolBarBottons.swift in Sources */,
 				858FB16B27C0B54500332FFC /* DownloadView.swift in Sources */,
 				852EAB8127C1DF7400F26210 /* UIColor_Extension.swift in Sources */,
+				CA90A3C627C502ED00BA7E73 /* TopToolBarView.swift in Sources */,
 				853A6B0727BBF97E00BC47F2 /* StandardHomeMovie.swift in Sources */,
 				853A6AFF27BBE8A500BC47F2 /* MoviesListViewModel.swift in Sources */,
 				852A505627BCA7DE00332A9B /* MoviesListView.swift in Sources */,
@@ -497,13 +504,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				852EAB7D27C1DD7800F26210 /* NavigationSettings.swift in Sources */,
+				CA90A3CD27C50CB200BA7E73 /* TopBannerView.swift in Sources */,
 				852A504F27BCA06000332A9B /* HomePage.swift in Sources */,
 				858FB16827C0B51300332FFC /* FinderView.swift in Sources */,
 				853A6B0827BBF97E00BC47F2 /* StandardHomeMovie.swift in Sources */,
 				855097E927BCC931009AB868 /* MovieDetailsView.swift in Sources */,
 				852EAB8527C1E7C400F26210 /* HeaderViewMac.swift in Sources */,
+				CA90A3C927C5049300BA7E73 /* BottomToolBarBottons.swift in Sources */,
 				858FB16C27C0B54500332FFC /* DownloadView.swift in Sources */,
 				852EAB8227C1DF7400F26210 /* UIColor_Extension.swift in Sources */,
+				CA90A3C727C502ED00BA7E73 /* TopToolBarView.swift in Sources */,
 				852A505127BCA39900332A9B /* TabViewPage.swift in Sources */,
 				855097D727BCA8DB009AB868 /* SeeMoreView.swift in Sources */,
 				852A505727BCA7DE00332A9B /* MoviesListView.swift in Sources */,
@@ -676,7 +686,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -710,7 +720,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

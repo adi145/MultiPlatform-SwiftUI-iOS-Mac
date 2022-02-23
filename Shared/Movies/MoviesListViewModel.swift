@@ -8,10 +8,20 @@
 import Foundation
 import OrderedCollections
 
+
+enum TopBannerItems {
+    case home
+    case tvshows
+    case movies
+    case kids
+}
+
 class MoviesListViewModel:ObservableObject {
+   
     @Published var homeMoviesList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
     @Published var tvShowsList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
     @Published var kidsMoviesList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
+    @Published var topBannerList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
 
     var navigationItem : NavigationItem!
     
@@ -28,6 +38,20 @@ class MoviesListViewModel:ObservableObject {
         default:
            return homeMoviesList.keys.map({ String($0) })
         }
+    }
+    
+    public func getTopbannerList(topBannerItems: TopBannerItems) -> [Movie]{
+        switch topBannerItems {
+        case .tvshows:
+            return topBannerList["topBannerListTvShows"] ?? []
+        case .movies:
+            return topBannerList["topBannerListMovies"] ?? []
+        case .kids:
+            return topBannerList["topBannerListKids"] ?? []
+        default:
+            return topBannerList["topBannerListHome"] ?? []
+        }
+        
     }
    
     public func getMovie(forCat cat: String) -> [Movie] {
@@ -49,7 +73,16 @@ class MoviesListViewModel:ObservableObject {
         self.setupMoviesHome()
         self.setupMoviesForTVShows()
         self.setupMoviesForKids()
+        self.setupTopBannerData()
     }
+    
+    func setupTopBannerData() {
+        topBannerList["topBannerListHome"] = exampleMovies.shuffled()
+        topBannerList["topBannerListTvShows"] = exampleMovies.shuffled()
+        topBannerList["topBannerListMovies"] = exampleMovies.shuffled()
+        topBannerList["topBannerListKids"] = exampleMovies.shuffled()
+    }
+    
     
     func setupMoviesHome() {
         homeMoviesList["Top movies"] = exampleMovies.shuffled()

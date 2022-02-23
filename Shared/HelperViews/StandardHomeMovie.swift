@@ -19,9 +19,3 @@ struct StandardHomeMovie: View {
         }
     }
 }
-
-struct StandardHomeMovie_Previews: PreviewProvider {
-    static var previews: some View {
-        StandardHomeMovie(movie: exampleMovies[0])
-    }
-}

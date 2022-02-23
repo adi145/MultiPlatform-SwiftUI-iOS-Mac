@@ -13,11 +13,14 @@ struct MyStuffView: View {
 
     var body: some View {
         ZStack {
-            Color.black
+            ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
             VStack{
+                if isMacOS(){
                 HeaderViewMac(title: "My Stuff")
-            }
+                }
+                Text("My Stuff")
+            }.background(Color.red)
         }
         
     }

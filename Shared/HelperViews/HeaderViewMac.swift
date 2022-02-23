@@ -30,20 +30,15 @@ struct HeaderViewMac: View {
                 Spacer()
               Text(title)
                 .foregroundColor(.white)
-                .font(.system(size: 25))
+                .font(.system(size: isMacOS() ? 25 : 20))
                 .padding(.bottom, 15)
                 Spacer()
-            }.frame(width: isMacOS() ? getRect().width : nil , height: 40, alignment: .leading)
+            }.frame(width: isMacOS() ? getRect().width : nil , height: isMacOS() ? 40 : 44, alignment: .leading)
                 .background(ColorTheme.bgColor.color)
-                .padding([.leading,.trailing], 20)
-        }.frame(width: isMacOS() ? getRect().width : nil , height: 40, alignment: .center)
+                .padding([.leading,.trailing], isMacOS() ? 20 : 16)
+        }.frame(width: isMacOS() ? getRect().width : nil , height: isMacOS() ? 40 : 44, alignment: .center)
             .background(ColorTheme.bgColor.color)
         Spacer()
     }
 }
 
-//struct HeaderViewMac_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HeaderViewMac()
-//    }
-//}

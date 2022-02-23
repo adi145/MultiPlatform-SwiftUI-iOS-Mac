@@ -13,14 +13,16 @@ struct DownloadView: View {
 
     var body: some View {
         ZStack {
-            Color.black
+            ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
             VStack{
-                HeaderViewMac(title: "Downloads")
+                if isMacOS() {
+                    HeaderViewMac(title: "Downloads")
+                }
             }
         }
-        
     }
+        
 }
 
 //struct DownloadView_Previews: PreviewProvider {

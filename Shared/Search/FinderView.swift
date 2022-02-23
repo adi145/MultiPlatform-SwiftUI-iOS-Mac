@@ -13,12 +13,16 @@ struct FinderView: View {
 
     var body: some View {
         ZStack {
-            Color.black
+            ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
             VStack{
-                HeaderViewMac(title: "Search")
+                if isMacOS(){
+                    HeaderViewMac(title: "Search")
+                }
+                Text("Search view")
             }
-        }
+        }.background(.red)
+        .navigationBarHidden(false)
         
     }
 }
