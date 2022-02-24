@@ -25,48 +25,58 @@ struct MoviesListView: View {
     @State var isShowTVShowsCarousel: Bool = false
     @State var isShowMoviesCarousel: Bool = false
     @State var isShowKidsCarousel: Bool = false
-    
+#if os(iOS)
+@EnvironmentObject var orientationInfo: OrientationInfo
+#endif
     var vm = MoviesListViewModel()
     @State var topBannerItems: TopBannerItems = .home
     
     let titleStr: String = NSLocalizedString("Movies", comment: "")
     
-    init() {
-        if !isMacOS() {
-            //Use this if NavigationBarTitle is with Large Font
-            UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
-            //Use this if NavigationBarTitle is with displayMode = .inline
-            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-        }
-    }
-
     var navigateToMovieDetailsView : some View {
         NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem), isActive: self.$settings.isNavigateMovieDetailsScreen) { EmptyView() }
     }
     
     var navigateToSeeMore : some View {
-        NavigationLink(destination: SeeMoreView(selectedCategory:self.selectedCategory ?? "", navigationItem: navigationItem, selectedMovie: $selectedMovie), isActive: self.$settings.isNavigateSeeMorePage) { EmptyView() }
+        NavigationLink(destination: SeeMoreView(selectedCategory:selectedCategory ?? "", navigationItem:navigationItem), isActive: self.$settings.isNavigateSeeMorePage) { EmptyView() }
     }
     
     fileprivate func setupTopBannerView() -> some View {
         return VStack{
-            switch topBannerItems {
-            case .tvshows:
-                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
-            case .movies:
-                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
-            case .kids:
-                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
-            default:
-                TopBannerView(topBannerTems: topBannerItems).frame(width: isMacOS() ? nil: getRect().width, height: isMacOS() ? nil: getRect().width/2.5).padding(.bottom, 20)
-            }
+#if os(iOS)
+            TopBannerView(topBannerTems: topBannerItems)
+            #endif
         }
+    }
+    
+    func getMovieItemHeight() -> CGFloat{
+        if isMacOS(){
+            return 150
+        } else {
+          #if os(iOS)
+            return orientationInfo.orientation == .portrait ? (getRect().width-72)/3.5 : (getRect().height-92)/3.5
+          #endif
+        }
+        return 0
+    }
+    
+    func getMovieItemWidth() -> CGFloat{
+        if isMacOS(){
+            return 150
+        } else {
+          #if os(iOS)
+            return orientationInfo.orientation == .portrait ? (getRect().width-72)/2 :  (getRect().height-92)/2
+          #endif
+        }
+        return 0
     }
     
     fileprivate func mainView(navigationItem:NavigationItem) -> some View {
         vm.navigationItem = navigationItem
         return ScrollView(showsIndicators: false) {
+            if !isMacOS(){
             setupTopBannerView()
+            }
             LazyVStack {
                 ForEach(vm.allHomeMoviesCategories, id: \.self) { category in
                     VStack {
@@ -91,7 +101,7 @@ struct MoviesListView: View {
                             LazyHStack {
                                 ForEach(vm.getMovie(forCat: category)) { movie in
                                     StandardHomeMovie(movie: movie)
-                                        .frame(width: isMacOS() ? 150 : (getRect().width-72)/2, height: isMacOS() ? 150 : (getRect().width-72)/3.5)
+                                        .frame(width: getMovieItemWidth() , height: getMovieItemHeight())
                                         .cornerRadius(5)
                                         .padding(.horizontal, 0).onTapGesture {
                                             self.selectedMovie = movie
@@ -116,16 +126,16 @@ struct MoviesListView: View {
                 HeaderViewMac(title: titleStr)
             }
             TopToolBarView(isShowHomeCarousel: $isShowHomeCarousel, isShowTVShowsCarousel: $isShowTVShowsCarousel, isShowMoviesCarousel: $isShowMoviesCarousel, isShowKidsCarousel: $isShowKidsCarousel, topBannerItems: $topBannerItems)
+            if !isMacOS() {
             navigateToMovieDetailsView
             navigateToSeeMore
+            }
             mainView(navigationItem: navigationItem)
         }
     }
     
     var body: some View {
-        ZStack {
-            Color.black
-                .edgesIgnoringSafeArea(.all)
+        NavigationView {
             Group{
             VStack{
                 switch settings.navigationItem {
@@ -140,7 +150,7 @@ struct MoviesListView: View {
                         .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
                         .background(Color.white)
                 case .seeMore:
-                    SeeMoreView(vm: MoviesListViewModel(), selectedCategory: selectedCategory ?? "", navigationItem: self.settings.navigationItem, selectedMovie: $selectedMovie)
+                    SeeMoreView()
                         .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
                         .background(Color.white)
                 case .moviesDetails:
@@ -159,10 +169,8 @@ struct MoviesListView: View {
                     BottomToolBarBottons(isHomeSelected: $isHomeSelected, isFinderSelected: $isFinderSelected, isDownloadsSelected: $isDownloadsSelected, isMyStuffSelected: $isMyStuffSelected)
                 }
             }.background(ColorTheme.bgColor.color)
-            }
-                
-        }.background(ColorTheme.bgColor.color)
-            .navigationBarTitle(Text(titleStr), displayMode: .inline)
-            .navigationBarHidden(false)
+            }.background(ColorTheme.bgColor.color)
+                .conditionalView(isMacOS() ? true : false, title: titleStr)
+        }
     }
 }

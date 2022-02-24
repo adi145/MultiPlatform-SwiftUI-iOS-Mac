@@ -6,75 +6,93 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SeeMoreView: View {
     var vm = MoviesListViewModel()
-    var selectedCategory = ""
+    var selectedCategory = "Top movies"
     var navigationItem : NavigationItem!
     @EnvironmentObject var settings : NavigationSettings
+    #if os(iOS)
+    @EnvironmentObject var orientationInfo: OrientationInfo
+    #endif
     @State var gridColums: [GridItem] = []
-    @Binding var selectedMovie: Movie?
+    @State var selectedMovie: Movie?
+    let columns = [
+        GridItem(.flexible(), alignment: .center),
+        GridItem(.flexible()),
+    ]
     
+    
+    func getCount() -> Int{
+        if isMacOS(){
+            return 5
+        } else {
+           #if os(iOS)
+            return orientationInfo.orientation == .portrait ? 2 : 3
+           #endif
+        }
+        return 0
+    }
+    
+    func getMainView() -> some View {
+        return VStack{
+            if isMacOS(){
+                HeaderViewMac(title: "See more",onBackAction: backButton, isShowBackButton: true)
+            }
+            if !isMacOS(){
+                navigateToMovieDetailsView
+            }
+            ScrollView {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5, alignment: .center), count: getCount()), spacing: 5) {  // HERE 2
+                    ForEach((vm.getMovie(forCat: selectedCategory))) { movie in
+                        HStack {
+                            StandardHomeMovie(movie: movie).cornerRadius(2)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 100) // HERE 1
+                        .background(Color.black)
+                        .cornerRadius(1)
+                        .onTapGesture {
+                            self.selectedMovie = movie
+                            if isMacOS() {
+                                self.settings.selectedNavigationItem.append(.seeMore)
+                                self.settings.navigationItem = NavigationItem.moviesDetails
+                            } else {
+                                self.settings.isNavigateMovieDetailsScreen = true
+                            }
+                        }
+                    }
+                }
+                .padding(0)
+            }.navigationTitle(Text("Seemore"))
+        }
+    }
     var body: some View {
         ZStack {
-            Color.black
+            ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
             VStack{
-                if isMacOS(){
-                    HeaderViewMac(title: "See More", onBackAction: backButton, isShowBackButton: true)
+                switch self.settings.navigationItem {
+                case .moviesDetails:
+                    MovieDetailsView(navigationItem: self.settings.navigationItem)
+                default:
+                    getMainView()
                 }
-                ScrollView {
-                    LazyVGrid(columns: gridColums) {
-                        ForEach(vm.getMovie(forCat: selectedCategory)){ movie in
-                            StandardHomeMovie(movie: movie)
-                                .frame(width: isMacOS() ? 150 : (getRect().width-52)/2, height: isMacOS() ? 150 : (getRect().width-52)/3.5)
-                                .onTapGesture {
-                                    self.selectedMovie = movie
-                                    self.settings.selectedNavigationItem = .seeMore
-                                    self.settings.navigationItem = .moviesDetails
-                                }
-                        }
-                    }.padding([.leading,.trailing],0)
-                        .background(.red)
-                    //                    .padding()
-                    //                    .padding([.vertical], 10)
-                }.padding([.leading,.trailing],0)
-                    .background(.orange)
-            }.padding([.leading,.trailing],0)
-                .background(.gray)
-            //.padding([.leading,.trailing], 16)
-        }.padding([.leading,.trailing],0)
-            .background(.white)
-        .onAppear(){
-            if !isMacOS() {
-                //Use this if NavigationBarTitle is with Large Font
-                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: Color.red]
-                //Use this if NavigationBarTitle is with displayMode = .inline
-                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
             }
-            self.vm.navigationItem = navigationItem
-            let windowWidth = isMacOS() ? getRect().width : getRect().width-52
-            print("windowWidth +++",windowWidth )
-            let totalColums = isMacOS() ? windowWidth/150 : (windowWidth/2)/(windowWidth/2)
-            print("totalColums +++",totalColums)
-            let totalWidth = windowWidth - 40 - totalColums * 10
-            print("totalWidth +++",totalWidth)
-            let totalColumsAfterPadding = windowWidth/(windowWidth/2)
-            print("totalColumsAfterPadding +++",totalColumsAfterPadding)
-            print("totalColumsAfterPadding +++",Int(totalColumsAfterPadding))
-            for _ in 0..<Int(totalColumsAfterPadding) {
-                self.gridColums.append(GridItem(.fixed((getRect().width-52)/2), spacing: 10))
-            }
-        }
+        }.background(.orange)
+    }
+    
+    var navigateToMovieDetailsView : some View {
+        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem), isActive: self.$settings.isNavigateMovieDetailsScreen) { EmptyView() }
     }
     
     func backButton() {
         self.settings.navigationItem = .home
     }
 }
-//
-//struct AllMoviesListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AllMoviesListView()
-//    }
-//}
+
+struct AllMoviesListView_Previews: PreviewProvider {
+    static var previews: some View {
+        SeeMoreView()
+    }
+}

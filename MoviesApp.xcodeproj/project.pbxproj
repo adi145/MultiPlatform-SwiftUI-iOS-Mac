@@ -54,7 +54,7 @@
 		CA90A3C927C5049300BA7E73 /* BottomToolBarBottons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */; };
 		CA90A3CA27C5059D00BA7E73 /* BottomToolBarBottons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */; };
 		CA90A3CC27C50CB200BA7E73 /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */; };
-		CA90A3CD27C50CB200BA7E73 /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */; };
+		CA90A3D227C74B1500BA7E73 /* OrientationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA90A3CF27C7213500BA7E73 /* OrientationInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +106,7 @@
 		CA90A3C527C502ED00BA7E73 /* TopToolBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopToolBarView.swift; sourceTree = "<group>"; };
 		CA90A3C827C5049300BA7E73 /* BottomToolBarBottons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomToolBarBottons.swift; sourceTree = "<group>"; };
 		CA90A3CB27C50CB200BA7E73 /* TopBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
+		CA90A3CF27C7213500BA7E73 /* OrientationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +191,7 @@
 		853A6AC027BBE64600BC47F2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				CA90A3CE27C720F300BA7E73 /* DeviceOrientataion */,
 				852EAB7E27C1DF4B00F26210 /* Colors */,
 				852EAB7A27C1DD5800F26210 /* NavigationItem */,
 				858FB16D27C0B54A00332FFC /* MyStuff */,
@@ -303,6 +305,14 @@
 				858FB16E27C0B56300332FFC /* MyStuffView.swift */,
 			);
 			path = MyStuff;
+			sourceTree = "<group>";
+		};
+		CA90A3CE27C720F300BA7E73 /* DeviceOrientataion */ = {
+			isa = PBXGroup;
+			children = (
+				CA90A3CF27C7213500BA7E73 /* OrientationInfo.swift */,
+			);
+			path = DeviceOrientataion;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -481,6 +491,7 @@
 			files = (
 				852EAB7C27C1DD7800F26210 /* NavigationSettings.swift in Sources */,
 				CA90A3CC27C50CB200BA7E73 /* TopBannerView.swift in Sources */,
+				CA90A3D227C74B1500BA7E73 /* OrientationInfo.swift in Sources */,
 				855097E227BCB5DB009AB868 /* TabViewPage.swift in Sources */,
 				858FB16727C0B51300332FFC /* FinderView.swift in Sources */,
 				852A504E27BCA06000332A9B /* HomePage.swift in Sources */,
@@ -504,7 +515,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				852EAB7D27C1DD7800F26210 /* NavigationSettings.swift in Sources */,
-				CA90A3CD27C50CB200BA7E73 /* TopBannerView.swift in Sources */,
 				852A504F27BCA06000332A9B /* HomePage.swift in Sources */,
 				858FB16827C0B51300332FFC /* FinderView.swift in Sources */,
 				853A6B0827BBF97E00BC47F2 /* StandardHomeMovie.swift in Sources */,

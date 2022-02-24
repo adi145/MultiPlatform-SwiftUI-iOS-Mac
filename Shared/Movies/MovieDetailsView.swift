@@ -15,23 +15,21 @@ struct MovieDetailsView: View {
    
     var body: some View {
         ZStack {
+            ColorTheme.bgColor.color
+                .edgesIgnoringSafeArea(.all)
             VStack{
                 if isMacOS(){
                     HeaderViewMac(title: "Movie Details",onBackAction: backButton, isShowBackButton: true)
                 }
-            }
-        }.onAppear {
-            if !isMacOS() {
-                //Use this if NavigationBarTitle is with Large Font
-                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
-                //Use this if NavigationBarTitle is with displayMode = .inline
-                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+            }.navigationTitle(Text("Movie Details"))
+//                .navigationViewStyle(.automatic)
+            .onAppear {
             }
         }
     }
-
+    
     func backButton() {
-        settings.navigationItem = settings.selectedNavigationItem
+        settings.navigationItem = settings.selectedNavigationItem.last ?? .home
     }
 }
 

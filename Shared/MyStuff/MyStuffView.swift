@@ -12,16 +12,18 @@ struct MyStuffView: View {
     @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
-        ZStack {
-            ColorTheme.bgColor.color
-                .edgesIgnoringSafeArea(.all)
-            VStack{
-                if isMacOS(){
-                HeaderViewMac(title: "My Stuff")
+        NavigationView{
+            ZStack {
+                ColorTheme.bgColor.color
+                    .edgesIgnoringSafeArea(.all)
+                VStack{
+                    if isMacOS(){
+                        HeaderViewMac(title: "My Stuff")
+                    }
+                    Text("My Stuff")
                 }
-                Text("My Stuff")
-            }.background(Color.red)
+                .conditionalView(isMacOS() ? true : false, title: "My Stuff")
+            }
         }
-        
     }
 }

@@ -12,13 +12,17 @@ struct DownloadView: View {
     @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
-        ZStack {
-            ColorTheme.bgColor.color
-                .edgesIgnoringSafeArea(.all)
-            VStack{
-                if isMacOS() {
-                    HeaderViewMac(title: "Downloads")
+        NavigationView{
+            ZStack {
+                ColorTheme.bgColor.color
+                    .edgesIgnoringSafeArea(.all)
+                VStack{
+                    if isMacOS() {
+                        HeaderViewMac(title: "Downloads")
+                    }
                 }
+//                .navigationBarTitle(Text("Downloads"), displayMode: .inline)
+                .conditionalView(isMacOS() ? true : false, title: "Downloads")
             }
         }
     }

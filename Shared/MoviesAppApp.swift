@@ -25,10 +25,13 @@ struct MoviesAppApp: App {
             })
         }
         #endif
+       #if os(iOS)
         WindowGroup {
             HomePage()
                 .environmentObject(userSettings)
+                .environmentObject(OrientationInfo())
         }
+       #endif
     }
     func makeWindow() {
         #if os(macOS)

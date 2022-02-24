@@ -7,10 +7,7 @@
 
 import Foundation
 
-protocol NavigationslectedItem {
-    var slectedNavigation:NavigationItem { get}
-}
-enum NavigationItem: NavigationslectedItem {
+enum NavigationItem {
     case home
     case search
     case downloads
@@ -23,11 +20,6 @@ enum NavigationItem: NavigationslectedItem {
     case toolBarTvShows
     case toolBarMovies
     case toolBarKids
-    
-    var slectedNavigation: NavigationItem {
-        return self
-    }
-    
 }
 
 class NavigationSettings: ObservableObject {
@@ -37,7 +29,8 @@ class NavigationSettings: ObservableObject {
 //    @Published var isNavigateMovieDetailsScreen: Bool = false
     @Published var showActivityIndicator:Bool = false
     @Published var isNavigateMovieDetailsScreen: Bool = false
+    @Published var isFromSeeMoreToMovieDetailsScreen: Bool = false
     @Published var isNavigateSeeMorePage: Bool = false
-    @Published var selectedNavigationItem: NavigationItem = .home
+    var selectedNavigationItem = [NavigationItem]()
     @Published var navigationItem: NavigationItem = .home
 }

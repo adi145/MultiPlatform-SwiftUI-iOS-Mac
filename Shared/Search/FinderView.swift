@@ -12,23 +12,42 @@ struct FinderView: View {
     @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
-        ZStack {
-            ColorTheme.bgColor.color
-                .edgesIgnoringSafeArea(.all)
-            VStack{
-                if isMacOS(){
-                    HeaderViewMac(title: "Search")
+        NavigationView{
+            ZStack {
+                ColorTheme.bgColor.color
+                    .edgesIgnoringSafeArea(.all)
+                VStack{
+                    if isMacOS() {
+                        HeaderViewMac(title: "Find")
+                    }
                 }
-                Text("Search view")
+                .conditionalView(isMacOS() ? true : false, title: "Find")
             }
-        }.background(.red)
-        .navigationBarHidden(false)
-        
+        }
     }
 }
 
-//struct SearchView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SearchView()
-//    }
-//}
+extension View {
+    func conditionalView(_ value: Bool, title:String) -> some View {
+        self.modifier(ConditionalModifier(isBold: value, title: title))
+  }
+}
+struct ConditionalModifier: ViewModifier {
+    var isBold: Bool
+    var title: String
+    func body(content: Content) -> some View {
+    Group {
+        if self.isBold {
+//            content.font(.custom("HelveticaNeue-Bold", size: 14))
+            content.navigationTitle(Text(title))
+
+        }else{
+//            content.font(.custom("HelveticaNeue", size: 14))
+            #if !os(macOS)
+            content.navigationBarTitle(Text(title), displayMode: .inline)
+            #endif
+            }
+        }
+    }
+  }
+
