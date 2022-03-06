@@ -9,11 +9,13 @@ import Foundation
 import OrderedCollections
 
 
-enum TopBannerItems {
-    case home
-    case tvshows
-    case movies
-    case kids
+enum TopBannerItems:String {
+    case home = "topBannerListHome"
+    case tvshows = "topBannerListTvShows"
+    case movies = "topBannerListMovies"
+    case kids = "topBannerListKids"
+    case featuredMovies = "featuredMovies"
+
 }
 
 class MoviesListViewModel:ObservableObject {
@@ -24,6 +26,7 @@ class MoviesListViewModel:ObservableObject {
     @Published var topBannerList: OrderedDictionary<String,[Movie]> = OrderedDictionary()
 
     var navigationItem : NavigationItem!
+    var topBannerSelectedItem : TopBannerItems = .home
     
     public var allHomeMoviesCategories:[String] {
         switch navigationItem {
@@ -43,13 +46,15 @@ class MoviesListViewModel:ObservableObject {
     public func getTopbannerList(topBannerItems: TopBannerItems) -> [Movie]{
         switch topBannerItems {
         case .tvshows:
-            return topBannerList["topBannerListTvShows"] ?? []
+            return homeMoviesList[TopBannerItems.home.rawValue] ?? []
         case .movies:
-            return topBannerList["topBannerListMovies"] ?? []
+            return homeMoviesList[TopBannerItems.movies.rawValue] ?? []
         case .kids:
-            return topBannerList["topBannerListKids"] ?? []
+            return homeMoviesList[TopBannerItems.kids.rawValue] ?? []
+        case .featuredMovies:
+            return homeMoviesList[TopBannerItems.featuredMovies.rawValue] ?? []
         default:
-            return topBannerList["topBannerListHome"] ?? []
+            return homeMoviesList[TopBannerItems.home.rawValue] ?? []
         }
         
     }
@@ -73,24 +78,20 @@ class MoviesListViewModel:ObservableObject {
         self.setupMoviesHome()
         self.setupMoviesForTVShows()
         self.setupMoviesForKids()
-        self.setupTopBannerData()
     }
-    
-    func setupTopBannerData() {
-        topBannerList["topBannerListHome"] = exampleMovies.shuffled()
-        topBannerList["topBannerListTvShows"] = exampleMovies.shuffled()
-        topBannerList["topBannerListMovies"] = exampleMovies.shuffled()
-        topBannerList["topBannerListKids"] = exampleMovies.shuffled()
-    }
-    
-    
+
     func setupMoviesHome() {
+        homeMoviesList[TopBannerItems.home.rawValue] = exampleMovies.shuffled()
+        homeMoviesList[TopBannerItems.tvshows.rawValue] = exampleMovies.shuffled()
+        homeMoviesList[TopBannerItems.movies.rawValue] = exampleMovies.shuffled()
+        homeMoviesList[TopBannerItems.kids.rawValue] = exampleMovies.shuffled()
         homeMoviesList["Top movies"] = exampleMovies.shuffled()
         homeMoviesList["Continu watching"] = exampleMovies.shuffled()
         homeMoviesList["Recently added movies"] = exampleMovies
         homeMoviesList["Latest movies"] = exampleMovies.shuffled()
+        homeMoviesList["Featured movies"] = exampleMovies.shuffled()
         homeMoviesList["Crime movies"] = exampleMovies.shuffled()
-        homeMoviesList["Feature previews"] = exampleMovies.shuffled()
+        homeMoviesList[TopBannerItems.featuredMovies.rawValue] = exampleMovies.shuffled()
         homeMoviesList["Web series"] = exampleMovies.shuffled()
         homeMoviesList["Bollywood movies"] = exampleMovies.shuffled()
         homeMoviesList["Tollywood movies"] = exampleMovies.shuffled()
@@ -122,19 +123,24 @@ class MoviesListViewModel:ObservableObject {
 
 struct Movie: Identifiable {
     var id: String?
-    var name: String?
+    var title: String?
     var url: URL?
 }
 
-let movies = Movie(id: UUID().uuidString, name: "Mission Impossible", url: URL(string: "https://picsum.photos/200/300")!)
-let movies1 = Movie(id: UUID().uuidString, name: "James Bond", url: URL(string: "https://picsum.photos/200/301")!)
-let movies2 = Movie(id: UUID().uuidString, name: "Jason Bourne", url: URL(string: "https://picsum.photos/200/302")!)
-let movies3 = Movie(id: UUID().uuidString, name: "Taken", url: URL(string: "https://picsum.photos/200/303")!)
-let movies4 = Movie(id: UUID().uuidString, name: "Harry porter", url: URL(string: "https://picsum.photos/200/304")!)
-let movies5 = Movie(id: UUID().uuidString, name: "Pokiri", url: URL(string: "https://picsum.photos/200/305")!)
-let movies6 = Movie(id: UUID().uuidString, name: "Mirror", url: URL(string: "https://picsum.photos/200/306")!)
-let movies7 = Movie(id: UUID().uuidString, name:"king's Men", url: URL(string: "https://picsum.photos/200/307")!)
-let movies8 = Movie(id: UUID().uuidString, name: "Hunter", url: URL(string: "https://picsum.photos/200/308")!)
-let movies9 = Movie(id: UUID().uuidString, name: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies = Movie(id: UUID().uuidString, title: "Mission Impossible", url: URL(string: "https://picsum.photos/200/300")!)
+let movies1 = Movie(id: UUID().uuidString, title: "James Bond", url: URL(string: "https://picsum.photos/200/301")!)
+let movies2 = Movie(id: UUID().uuidString, title: "Jason Bourne", url: URL(string: "https://picsum.photos/200/302")!)
+let movies3 = Movie(id: UUID().uuidString, title: "Taken", url: URL(string: "https://picsum.photos/200/303")!)
+let movies4 = Movie(id: UUID().uuidString, title: "Harry porter", url: URL(string: "https://picsum.photos/200/304")!)
+let movies5 = Movie(id: UUID().uuidString, title: "Pokiri", url: URL(string: "https://picsum.photos/200/305")!)
+let movies6 = Movie(id: UUID().uuidString, title: "Mirror", url: URL(string: "https://picsum.photos/200/306")!)
+let movies7 = Movie(id: UUID().uuidString, title:"king's Men", url: URL(string: "https://picsum.photos/200/307")!)
+let movies8 = Movie(id: UUID().uuidString, title: "Hunter", url: URL(string: "https://picsum.photos/200/308")!)
+let movies9 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies10 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies11 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies12 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies13 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
+let movies14 = Movie(id: UUID().uuidString, title: "Shooter", url: URL(string: "https://picsum.photos/200/309")!)
 
-let exampleMovies = [movies,movies1,movies2,movies3,movies4,movies5,movies6,movies7,movies8,movies9]
+let exampleMovies = [movies,movies1,movies2,movies3,movies4,movies5,movies6,movies7,movies8,movies9,movies10,movies11,movies12,movies13,movies14]

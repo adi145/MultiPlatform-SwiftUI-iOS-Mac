@@ -42,39 +42,44 @@ struct TabViewPage: View {
 
             MoviesListView()
             .tabItem {
-                Image(systemName: "house.fill").imageScale(.medium).foregroundColor(Color.accentColor)
+                Image(systemName: "house.fill")
+                    .imageScale(.medium).foregroundColor(Color.accentColor)
                 Text("Home")
             }.tag(1)
             
-            FinderView().navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
+            FinderView()
+//                .navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
             .tabItem {
                 Image(systemName: "magnifyingglass").imageScale(.medium).foregroundColor(Color.accentColor)
                 Text("Find")
             }.tag(2)
 
                 DownloadView()
-                    .navigationBarTitle("Downloads", displayMode: .inline)
+//                    .navigationBarTitle("Downloads", displayMode: .inline)
                 .tabItem {
-                    Image(systemName: "arrow.down.circle").imageScale(.small).foregroundColor(Color.accentColor)
+                    Image(systemName: "arrow.down.circle")
+                        .imageScale(.small).foregroundColor(Color.accentColor)
                     Text("Downloads")
                 }.tag(3)
                 
-            MyStuffView().navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
+            MyStuffView()
+//                .navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
                 .tabItem {
-                    Image(systemName: "person.circle.fill").font(.system(size: 10)).foregroundColor(Color.accentColor)
+                    Image(systemName: "person.circle.fill")
+                        .font(.system(size: 10)).foregroundColor(Color.accentColor)
                     Text("My Stuff")
                 }.tag(4)
                 
             
         }
-        .navigationBarTitle(Text(self.navigationTitle), displayMode: .inline)
+        .conditionalView(true, title: navigationTitle)
         .navigationBarHidden(false)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(trailing: self.tabIndex == 4 ?
             AnyView(self.navigationBarButton) : AnyView(EmptyView()))
         .onAppear {
             let appearance = UITabBarAppearance()
-            appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+            appearance.backgroundEffect = UIBlurEffect(style: .dark)
             appearance.backgroundColor = UIColor(Color.black)
             // Use this appearance when scrolling behind the TabView:
             UITabBar.appearance().standardAppearance = appearance
@@ -82,18 +87,13 @@ struct TabViewPage: View {
             UITabBar.appearance().scrollEdgeAppearance = appearance
             
             let appearance1 = UINavigationBarAppearance()
-            appearance1.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+            appearance1.backgroundEffect = UIBlurEffect(style: .dark)
             appearance1.titleTextAttributes = [.foregroundColor: UIColor.white]
             appearance1.largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
 
             appearance1.backgroundColor = UIColor(ColorTheme.bgColor.color)
-//            UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: ColorTheme.bgColor.color]
-//            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
             UINavigationBar.appearance().standardAppearance = appearance1
             UINavigationBar.appearance().scrollEdgeAppearance = appearance1
-            
-            //Use this if NavigationBarTitle is with displayMode = .inline
-         
         }
     }
     

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct FinderView: View {
-//    @Binding var navigationItem : NavigationItem
     @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
@@ -38,14 +37,15 @@ struct ConditionalModifier: ViewModifier {
     func body(content: Content) -> some View {
     Group {
         if self.isBold {
-//            content.font(.custom("HelveticaNeue-Bold", size: 14))
             content.navigationTitle(Text(title))
-
         }else{
-//            content.font(.custom("HelveticaNeue", size: 14))
-            #if !os(macOS)
+            #if os(iOS)
             content.navigationBarTitle(Text(title), displayMode: .inline)
             #endif
+          
+           #if os(tvOS)
+            content.navigationTitle(Text(title))
+             #endif
             }
         }
     }

@@ -14,9 +14,9 @@ struct TopBannerView: View {
     var navigationItem: NavigationItem = .home
     @EnvironmentObject var settings : NavigationSettings
     
-#if os(iOS)
-@EnvironmentObject var orientationInfo: OrientationInfo
-#endif
+    #if os(iOS)
+    @EnvironmentObject var orientationInfo: OrientationInfo
+    #endif
     @State var selectedMovie: Movie?
     
     var navigateToMovieDetailsView : some View {
@@ -25,35 +25,38 @@ struct TopBannerView: View {
     
     var body: some View {
         VStack {
-            navigateToMovieDetailsView
-            TabView(selection: $selectedPage) {
-                ForEach(0..<vm.getTopbannerList(topBannerItems: topBannerTems).count, id: \.self) { index in
-                    StandardHomeMovie(movie: vm.getTopbannerList(topBannerItems: topBannerTems)[index])
-                        .frame(width: isMacOS() ? 150 : getRect().width, height: isMacOS() ? 150 : (getRect().width)/2.5)
-                        .cornerRadius(5)
-                        .tag(index)
-                        .padding(.horizontal, 0).onTapGesture {
-                            self.selectedMovie = vm.getTopbannerList(topBannerItems: topBannerTems)[index]
-                            if isMacOS() {
-                                self.settings.navigationItem = .moviesDetails
-                            } else {
-                                self.settings.isNavigateMovieDetailsScreen = true
-                            }
-                        }
-                    
-                }
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack {
+                    ForEach(vm.getTopbannerList(topBannerItems: topBannerTems)) { movie in
+                        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
+                            StandardHomeMovie(movie: movie)
+                                .frame(width: getMovieItemWidth() , height: getMovieItemHeight())
+                                .cornerRadius(10)
+                                .padding(.horizontal, 5)
+                           }
+                    }
+                }.cornerRadius(10)
             }
-//            .tabViewStyle(.automatic)
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-        }.frame(width: isMacOS() ? nil: getRect().width, height: getTopBarHeight() ).padding(.bottom, 20)
+        }.frame(width: isMacOS() ? nil: getRect().width, height: getMovieItemHeight() ).padding(.bottom, 20)
     }
-    
-    func getTopBarHeight() -> CGFloat{
+    func getMovieItemHeight() -> CGFloat{
         if isMacOS(){
-            return 150
+            return getRect().width/7
         } else {
           #if os(iOS)
-            return orientationInfo.orientation == .portrait ? getRect().width/2.5 : getRect().height/2.5
+            return orientationInfo.orientation == .portrait ? (getRect().width)/1.9 : (getRect().height)/1.9
+          #endif
+        }
+        return 0
+    }
+    
+    
+    func getMovieItemWidth() -> CGFloat{
+        if isMacOS(){
+            return getRect().width/5
+        } else {
+          #if os(iOS)
+            return orientationInfo.orientation == .portrait ? (getRect().width-52) :  (getRect().width-52)/2
           #endif
         }
         return 0

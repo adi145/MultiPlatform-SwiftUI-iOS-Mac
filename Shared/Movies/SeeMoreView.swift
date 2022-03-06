@@ -44,26 +44,28 @@ struct SeeMoreView: View {
                 navigateToMovieDetailsView
             }
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5, alignment: .center), count: getCount()), spacing: 5) {  // HERE 2
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .center), count: getCount()), spacing: 10) {  // HERE 2
                     ForEach((vm.getMovie(forCat: selectedCategory))) { movie in
+                        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
                         HStack {
                             StandardHomeMovie(movie: movie).cornerRadius(2)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 100) // HERE 1
+                        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 100)
                         .background(Color.black)
-                        .cornerRadius(1)
-                        .onTapGesture {
-                            self.selectedMovie = movie
-                            if isMacOS() {
-                                self.settings.selectedNavigationItem.append(.seeMore)
-                                self.settings.navigationItem = NavigationItem.moviesDetails
-                            } else {
-                                self.settings.isNavigateMovieDetailsScreen = true
-                            }
+                        .cornerRadius(5)
+//                        .onTapGesture {
+//                            self.selectedMovie = movie
+//                            if isMacOS() {
+//                                self.settings.selectedNavigationItem.append(.seeMore)
+//                                self.settings.navigationItem = NavigationItem.moviesDetails
+//                            } else {
+//                                self.settings.isNavigateMovieDetailsScreen = true
+//                            }
+//                        }
                         }
                     }
                 }
-                .padding(0)
+                .padding([.leading,.trailing], 16)
             }.navigationTitle(Text("Seemore"))
         }
     }
@@ -87,6 +89,7 @@ struct SeeMoreView: View {
     }
     
     func backButton() {
+        self.settings.selectedNavigationItem.removeAll()
         self.settings.navigationItem = .home
     }
 }

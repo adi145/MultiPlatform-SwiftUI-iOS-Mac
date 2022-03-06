@@ -17,7 +17,9 @@ struct TopToolBarView: View {
 
     var body: some View {
         VStack{
+            
             HStack(spacing:10){
+                
                 Button("Home") {
                     isShowTVShowsCarousel = false
                     isShowMoviesCarousel = false
@@ -135,5 +137,12 @@ struct TopToolBarView: View {
             width = 310
         }
         return width
+    }
+}
+
+
+struct TopToolBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        TopToolBarView(isShowHomeCarousel: .constant(true), isShowTVShowsCarousel: .constant(false), isShowMoviesCarousel: .constant(false), isShowKidsCarousel:  .constant(false), topBannerItems: .constant(TopBannerItems.home))
     }
 }
