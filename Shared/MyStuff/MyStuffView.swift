@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct MyStuffView: View {
-    
-    @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
         NavigationView{
@@ -21,9 +19,8 @@ struct MyStuffView: View {
                         HeaderViewMac(title: "My Stuff")
                     }
                     Text("My Stuff")
-                }
-                .conditionalView(isMacOS() ? true : false, title: "My Stuff")
+                }.conditionalView(isMacOS() ? true : false, title: "My Stuff")
             }
-        }
+        }.conditionalNavigationStyle(isMacOS())
     }
 }

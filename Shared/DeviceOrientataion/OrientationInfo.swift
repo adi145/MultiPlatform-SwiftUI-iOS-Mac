@@ -14,8 +14,15 @@ final class OrientationInfo: ObservableObject {
         case landscape
     }
     
-    @Published var orientation: Orientation
+    enum DeviceType {
+        case iphone
+        case ipad
+        case tv
+    }
     
+    @Published var orientation: Orientation
+    @Published var deviceType: DeviceType
+
     private var _observer: NSObjectProtocol?
     
     init() {
@@ -25,6 +32,14 @@ final class OrientationInfo: ObservableObject {
         }
         else {
             self.orientation = .portrait
+        }
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.deviceType = .ipad
+        } else if UIDevice.current.userInterfaceIdiom == .tv {
+            self.deviceType = .tv
+        } else {
+            self.deviceType = .iphone
         }
         
         // unowned self because we unregister before self becomes invalid
@@ -37,6 +52,14 @@ final class OrientationInfo: ObservableObject {
             }
             else if device.orientation.isLandscape {
                 self.orientation = .landscape
+            }
+            
+            if device.userInterfaceIdiom == .pad {
+                self.deviceType = .ipad
+            } else if device.userInterfaceIdiom == .tv {
+                self.deviceType = .tv
+            } else {
+                self.deviceType = .iphone
             }
         }
         

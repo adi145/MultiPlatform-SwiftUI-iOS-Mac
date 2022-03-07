@@ -12,8 +12,6 @@ enum TabItems: Int {
 }
  
 struct TabViewPage: View {
-  
-//    @EnvironmentObject var settings : NavigationSettings
     @State var navigationTitle = "Movies"
     @State private var selectedTab = 0
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
@@ -39,44 +37,35 @@ struct TabViewPage: View {
                 }
             })
         return TabView(selection: selection) {
-
-            MoviesListView()
-            .tabItem {
-                Image(systemName: "house.fill")
-                    .imageScale(.medium).foregroundColor(Color.accentColor)
-                Text("Home")
-            }.tag(1)
-            
+            MoviesListView(navigationItem: .home)
+                .tabItem {
+                    Image(systemName: "house.fill")
+                        .imageScale(.medium).foregroundColor(Color.accentColor)
+                    Text("Home")
+                }.tag(1)
             FinderView()
-//                .navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
-            .tabItem {
-                Image(systemName: "magnifyingglass").imageScale(.medium).foregroundColor(Color.accentColor)
-                Text("Find")
-            }.tag(2)
-
-                DownloadView()
-//                    .navigationBarTitle("Downloads", displayMode: .inline)
+                .tabItem {
+                    Image(systemName: "magnifyingglass").imageScale(.medium).foregroundColor(Color.accentColor)
+                    Text("Find")
+                }.tag(2)
+            DownloadView()
                 .tabItem {
                     Image(systemName: "arrow.down.circle")
                         .imageScale(.small).foregroundColor(Color.accentColor)
                     Text("Downloads")
                 }.tag(3)
-                
             MyStuffView()
-//                .navigationBarTitle("NavBar title Tabbar1", displayMode: .inline)
                 .tabItem {
                     Image(systemName: "person.circle.fill")
                         .font(.system(size: 10)).foregroundColor(Color.accentColor)
                     Text("My Stuff")
                 }.tag(4)
-                
-            
         }
         .conditionalView(true, title: navigationTitle)
         .navigationBarHidden(false)
         .navigationBarBackButtonHidden(true)
-        .navigationBarItems(trailing: self.tabIndex == 4 ?
-            AnyView(self.navigationBarButton) : AnyView(EmptyView()))
+//        .navigationBarItems(trailing: self.tabIndex == 4 ?
+//            AnyView(self.navigationBarButton) : AnyView(EmptyView()))
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.backgroundEffect = UIBlurEffect(style: .dark)

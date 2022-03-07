@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FinderView: View {
-    @EnvironmentObject var settings : NavigationSettings
+//    @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
         NavigationView{
@@ -22,7 +22,7 @@ struct FinderView: View {
                 }
                 .conditionalView(isMacOS() ? true : false, title: "Find")
             }
-        }
+        }.conditionalNavigationStyle(isMacOS())
     }
 }
 
@@ -30,6 +30,24 @@ extension View {
     func conditionalView(_ value: Bool, title:String) -> some View {
         self.modifier(ConditionalModifier(isBold: value, title: title))
   }
+    func conditionalNavigationStyle(_ value: Bool) -> some View {
+        self.modifier(ConditionalNavigationStyleModifier(isMacOS: value))
+  }
+    
+}
+struct ConditionalNavigationStyleModifier: ViewModifier {
+    var isMacOS: Bool
+    func body(content: Content) -> some View {
+        Group {
+            if isMacOS {
+                content.navigationViewStyle(.automatic)
+            }else{
+               #if os(iOS)
+                content.navigationViewStyle(StackNavigationViewStyle())
+               #endif
+            }
+        }
+    }
 }
 struct ConditionalModifier: ViewModifier {
     var isBold: Bool

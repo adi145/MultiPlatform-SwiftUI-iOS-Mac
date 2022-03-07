@@ -19,8 +19,11 @@ struct TopBannerView: View {
     #endif
     @State var selectedMovie: Movie?
     
-    var navigateToMovieDetailsView : some View {
-        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem), isActive: self.$settings.isNavigateMovieDetailsScreen) { EmptyView() }
+    fileprivate func displayMoviesWithHorizontal(movie: Movie) -> some View {
+        return StandardHomeMovie(movie: movie)
+            .frame(width: getMovieItemWidth() , height: getMovieItemHeight())
+            .cornerRadius(10)
+            .padding(.horizontal, 5)
     }
     
     var body: some View {
@@ -28,23 +31,31 @@ struct TopBannerView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(vm.getTopbannerList(topBannerItems: topBannerTems)) { movie in
-                        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
-                            StandardHomeMovie(movie: movie)
-                                .frame(width: getMovieItemWidth() , height: getMovieItemHeight())
-                                .cornerRadius(10)
-                                .padding(.horizontal, 5)
-                           }
+                        if isMacOS() {
+                            displayMoviesWithHorizontal(movie: movie)
+                                .onTapGesture {
+                                self.selectedMovie = movie
+                                self.settings.selectedNavigationItem.append(.home)
+                                self.settings.navigationItem = NavigationItem.moviesDetails
+                            }
+                        } else {
+                            NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
+                                displayMoviesWithHorizontal(movie: movie)
+                            }
+                        }
                     }
                 }.cornerRadius(10)
             }
-        }.frame(width: isMacOS() ? nil: getRect().width, height: getMovieItemHeight() ).padding(.bottom, 20)
+        }.frame(width: isMacOS() ? getRect().width-32 : getRect().width-32, height: getMovieItemHeight() ).padding(.bottom, 20)
+            .cornerRadius(10)
+        
     }
     func getMovieItemHeight() -> CGFloat{
         if isMacOS(){
-            return getRect().width/7
+            return (getRect().width-32)/7
         } else {
           #if os(iOS)
-            return orientationInfo.orientation == .portrait ? (getRect().width)/1.9 : (getRect().height)/1.9
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width)/1.9 : (getRect().height)/1.9 : orientationInfo.orientation == .portrait ? (getRect().width)/4 : (getRect().height)/3.5
           #endif
         }
         return 0
@@ -53,10 +64,10 @@ struct TopBannerView: View {
     
     func getMovieItemWidth() -> CGFloat{
         if isMacOS(){
-            return getRect().width/5
+            return (getRect().width-32)/4.2
         } else {
           #if os(iOS)
-            return orientationInfo.orientation == .portrait ? (getRect().width-52) :  (getRect().width-52)/2
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-62) :  (getRect().width-72)/2 : orientationInfo.orientation == .portrait ? (getRect().width-82)/2 :  (getRect().width-82)/2
           #endif
         }
         return 0

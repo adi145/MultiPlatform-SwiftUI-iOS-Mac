@@ -17,12 +17,13 @@ struct SeeMoreView: View {
     @EnvironmentObject var orientationInfo: OrientationInfo
     #endif
     @State var gridColums: [GridItem] = []
-    @State var selectedMovie: Movie?
+    @Binding var selectedMovie: Movie
+    @State var selectedMovie1: Movie = Movie()
+
     let columns = [
         GridItem(.flexible(), alignment: .center),
         GridItem(.flexible()),
     ]
-    
     
     func getCount() -> Int{
         if isMacOS(){
@@ -35,34 +36,37 @@ struct SeeMoreView: View {
         return 0
     }
     
+    fileprivate func displayAllMovies(movie: Movie) -> some View {
+        return HStack {
+            StandardHomeMovie(movie: movie).cornerRadius(2)
+        }
+        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 100)
+        .background(Color.black)
+        .cornerRadius(5)
+    }
+    
     func getMainView() -> some View {
         return VStack{
             if isMacOS(){
                 HeaderViewMac(title: "See more",onBackAction: backButton, isShowBackButton: true)
             }
-            if !isMacOS(){
-                navigateToMovieDetailsView
-            }
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .center), count: getCount()), spacing: 10) {  // HERE 2
                     ForEach((vm.getMovie(forCat: selectedCategory))) { movie in
-                        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
-                        HStack {
-                            StandardHomeMovie(movie: movie).cornerRadius(2)
+                        if isMacOS() {
+                            displayAllMovies(movie: movie)
+                                .onTapGesture {
+                                    self.selectedMovie = movie
+                                    self.selectedMovie1 = movie
+                                    //                                        self.settings.selectedNavigationItem.append(.seeMore)
+                                    self.settings.isFromSeeMoreToMovieDetailsScreen = true
+                                }
+                        } else {
+                            NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
+                                displayAllMovies(movie: movie)
+                            }
                         }
-                        .frame(maxWidth: .infinity, minHeight: 50, maxHeight: 100)
-                        .background(Color.black)
-                        .cornerRadius(5)
-//                        .onTapGesture {
-//                            self.selectedMovie = movie
-//                            if isMacOS() {
-//                                self.settings.selectedNavigationItem.append(.seeMore)
-//                                self.settings.navigationItem = NavigationItem.moviesDetails
-//                            } else {
-//                                self.settings.isNavigateMovieDetailsScreen = true
-//                            }
-//                        }
-                        }
+                        
                     }
                 }
                 .padding([.leading,.trailing], 16)
@@ -89,13 +93,6 @@ struct SeeMoreView: View {
     }
     
     func backButton() {
-        self.settings.selectedNavigationItem.removeAll()
-        self.settings.navigationItem = .home
-    }
-}
-
-struct AllMoviesListView_Previews: PreviewProvider {
-    static var previews: some View {
-        SeeMoreView()
+        settings.navigationItem = .home
     }
 }

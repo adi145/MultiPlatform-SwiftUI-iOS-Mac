@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct DownloadView: View {
-//    @Binding var navigationItem : NavigationItem
-    @EnvironmentObject var settings : NavigationSettings
 
     var body: some View {
         NavigationView{
@@ -21,10 +19,9 @@ struct DownloadView: View {
                         HeaderViewMac(title: "Downloads")
                     }
                 }
-//                .navigationBarTitle(Text("Downloads"), displayMode: .inline)
                 .conditionalView(isMacOS() ? true : false, title: "Downloads")
             }
-        }
+        }.conditionalNavigationStyle(isMacOS())
     }
         
 }

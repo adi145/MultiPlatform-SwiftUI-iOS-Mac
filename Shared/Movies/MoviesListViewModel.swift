@@ -14,7 +14,7 @@ enum TopBannerItems:String {
     case tvshows = "topBannerListTvShows"
     case movies = "topBannerListMovies"
     case kids = "topBannerListKids"
-    case featuredMovies = "featuredMovies"
+    case featuredMovies = "Featured Movies"
 
 }
 
@@ -89,7 +89,7 @@ class MoviesListViewModel:ObservableObject {
         homeMoviesList["Continu watching"] = exampleMovies.shuffled()
         homeMoviesList["Recently added movies"] = exampleMovies
         homeMoviesList["Latest movies"] = exampleMovies.shuffled()
-        homeMoviesList["Featured movies"] = exampleMovies.shuffled()
+//        homeMoviesList["Featured movies"] = exampleMovies.shuffled()
         homeMoviesList["Crime movies"] = exampleMovies.shuffled()
         homeMoviesList[TopBannerItems.featuredMovies.rawValue] = exampleMovies.shuffled()
         homeMoviesList["Web series"] = exampleMovies.shuffled()

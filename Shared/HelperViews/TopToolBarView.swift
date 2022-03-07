@@ -17,9 +17,7 @@ struct TopToolBarView: View {
 
     var body: some View {
         VStack{
-            
             HStack(spacing:10){
-                
                 Button("Home") {
                     isShowTVShowsCarousel = false
                     isShowMoviesCarousel = false
