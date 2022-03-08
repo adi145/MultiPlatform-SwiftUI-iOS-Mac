@@ -10,15 +10,13 @@ import Kingfisher
 
 struct SeeMoreView: View {
     var vm = MoviesListViewModel()
-    var selectedCategory = "Top movies"
+    var selectedCategory = ""
     var navigationItem : NavigationItem!
     @EnvironmentObject var settings : NavigationSettings
     #if os(iOS)
     @EnvironmentObject var orientationInfo: OrientationInfo
     #endif
     @State var gridColums: [GridItem] = []
-    @Binding var selectedMovie: Movie
-    @State var selectedMovie1: Movie = Movie()
 
     let columns = [
         GridItem(.flexible(), alignment: .center),
@@ -30,7 +28,8 @@ struct SeeMoreView: View {
             return 5
         } else {
            #if os(iOS)
-            return orientationInfo.orientation == .portrait ? 2 : 3
+            print(getRect().width)
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? 2 : 3 : orientationInfo.orientation == .portrait ? 3 : getRect().width > 1000 ? 5 : 4
            #endif
         }
         return 0
@@ -46,6 +45,7 @@ struct SeeMoreView: View {
     }
     
     func getMainView() -> some View {
+        vm.navigationItem = navigationItem
         return VStack{
             if isMacOS(){
                 HeaderViewMac(title: "See more",onBackAction: backButton, isShowBackButton: true)
@@ -56,21 +56,16 @@ struct SeeMoreView: View {
                         if isMacOS() {
                             displayAllMovies(movie: movie)
                                 .onTapGesture {
-                                    self.selectedMovie = movie
-                                    self.selectedMovie1 = movie
-                                    //                                        self.settings.selectedNavigationItem.append(.seeMore)
-                                    self.settings.isFromSeeMoreToMovieDetailsScreen = true
                                 }
                         } else {
-                            NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
+                            NavigationLink(destination: MovieDetailsView(selectedMovie: movie)){
                                 displayAllMovies(movie: movie)
                             }
                         }
-                        
                     }
                 }
                 .padding([.leading,.trailing], 16)
-            }.navigationTitle(Text("Seemore"))
+            }.navigationTitle(Text(selectedCategory))
         }
     }
     var body: some View {
@@ -78,18 +73,11 @@ struct SeeMoreView: View {
             ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
             VStack{
-                switch self.settings.navigationItem {
-                case .moviesDetails:
-                    MovieDetailsView(navigationItem: self.settings.navigationItem)
-                default:
-                    getMainView()
-                }
+                getMainView()
+            }.onAppear {
+//                vm.navigationItem = navigationItem
             }
         }.background(.orange)
-    }
-    
-    var navigateToMovieDetailsView : some View {
-        NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem), isActive: self.$settings.isNavigateMovieDetailsScreen) { EmptyView() }
     }
     
     func backButton() {

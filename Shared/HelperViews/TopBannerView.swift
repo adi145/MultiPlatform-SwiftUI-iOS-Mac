@@ -8,43 +8,47 @@
 import SwiftUI
 
 struct TopBannerView: View {
-    @State private var selectedPage = 0
     var vm = MoviesListViewModel()
-    var topBannerTems: TopBannerItems = .home
-    var navigationItem: NavigationItem = .home
+    @State var selectedCategory: String = ""
+    var navigationItem : NavigationItem
     @EnvironmentObject var settings : NavigationSettings
     
     #if os(iOS)
     @EnvironmentObject var orientationInfo: OrientationInfo
     #endif
     @State var selectedMovie: Movie?
-    
+     
     fileprivate func displayMoviesWithHorizontal(movie: Movie) -> some View {
         return StandardHomeMovie(movie: movie)
             .frame(width: getMovieItemWidth() , height: getMovieItemHeight())
             .cornerRadius(10)
             .padding(.horizontal, 5)
     }
+
+    fileprivate func setupBannerView() -> some View {
+        vm.navigationItem = navigationItem
+        return LazyHStack {
+            ForEach(vm.getMovie(forCat: selectedCategory)) { movie in
+                if isMacOS() {
+                    displayMoviesWithHorizontal(movie: movie)
+                        .onTapGesture {
+                            //                                self.selectedMovie = movie
+                            //                                self.settings.selectedNavigationItem.append(.home)
+                            //                                self.settings.navigationItem = NavigationItem.moviesDetails
+                        }
+                } else {
+                    NavigationLink(destination: MovieDetailsView(selectedMovie: movie)){
+                        displayMoviesWithHorizontal(movie: movie)
+                    }
+                }
+            }
+        }.cornerRadius(10)
+    }
     
     var body: some View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack {
-                    ForEach(vm.getTopbannerList(topBannerItems: topBannerTems)) { movie in
-                        if isMacOS() {
-                            displayMoviesWithHorizontal(movie: movie)
-                                .onTapGesture {
-                                self.selectedMovie = movie
-                                self.settings.selectedNavigationItem.append(.home)
-                                self.settings.navigationItem = NavigationItem.moviesDetails
-                            }
-                        } else {
-                            NavigationLink(destination: MovieDetailsView(navigationItem: navigationItem, selectedMovie: movie)){
-                                displayMoviesWithHorizontal(movie: movie)
-                            }
-                        }
-                    }
-                }.cornerRadius(10)
+                setupBannerView()
             }
         }.frame(width: isMacOS() ? getRect().width-32 : getRect().width-32, height: getMovieItemHeight() ).padding(.bottom, 20)
             .cornerRadius(10)
@@ -67,15 +71,9 @@ struct TopBannerView: View {
             return (getRect().width-32)/4.2
         } else {
           #if os(iOS)
-            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-62) :  (getRect().width-72)/2 : orientationInfo.orientation == .portrait ? (getRect().width-82)/2 :  (getRect().width-82)/2
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-62) :  (getRect().width-72)/2.2 : orientationInfo.orientation == .portrait ? (getRect().width-82)/2 :  (getRect().width-82)/2
           #endif
         }
         return 0
-    }
-}
-
-struct TopBannerView_Previews: PreviewProvider {
-    static var previews: some View {
-        TopBannerView()
     }
 }

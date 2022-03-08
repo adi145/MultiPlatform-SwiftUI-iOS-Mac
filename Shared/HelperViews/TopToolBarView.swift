@@ -13,7 +13,7 @@ struct TopToolBarView: View {
     @Binding var isShowMoviesCarousel: Bool
     @Binding var isShowKidsCarousel: Bool
     @EnvironmentObject var settings : NavigationSettings
-    @Binding var topBannerItems: TopBannerItems
+//    @Binding var topBannerItems: TopBannerItems
 
     var body: some View {
         VStack{
@@ -23,8 +23,7 @@ struct TopToolBarView: View {
                     isShowMoviesCarousel = false
                     isShowKidsCarousel = false
                     isShowHomeCarousel = true
-                    self.topBannerItems = .home
-                    self.settings.navigationItem = .toolBarHome
+                    self.settings.navigationItem = .home
                 }.frame(width: getWidthOfTopToolBarButtons(), height: getHeightOfTopToolBarButtons())
                     .buttonStyle(.plain)
                     .foregroundColor(.white)
@@ -35,8 +34,7 @@ struct TopToolBarView: View {
                     isShowMoviesCarousel = false
                     isShowKidsCarousel = false
                     isShowHomeCarousel = false
-                    self.topBannerItems = .tvshows
-                    self.settings.navigationItem = .toolBarTvShows
+                    self.settings.navigationItem = .TV
                 }.frame(width: getWidthOfTopToolBarButtons(), height: getHeightOfTopToolBarButtons())
                     .buttonStyle(.plain)
                     .foregroundColor(.white)
@@ -47,8 +45,7 @@ struct TopToolBarView: View {
                     isShowMoviesCarousel = true
                     isShowKidsCarousel = false
                     isShowHomeCarousel = false
-                    self.topBannerItems = .movies
-                    self.settings.navigationItem = .toolBarMovies
+                    self.settings.navigationItem = .movies
                 }.frame(width: getWidthOfTopToolBarButtons(), height: getHeightOfTopToolBarButtons())
                     .buttonStyle(.plain)
                     .foregroundColor(.white)
@@ -59,8 +56,7 @@ struct TopToolBarView: View {
                     isShowMoviesCarousel = false
                     isShowKidsCarousel = true
                     isShowHomeCarousel = false
-                    self.topBannerItems = .kids
-                    self.settings.navigationItem = .toolBarKids
+                    self.settings.navigationItem = .kids
                 }.frame(width: 60, height: 38, alignment: .center)
                     .buttonStyle(.plain)
                     .foregroundColor(.white)
@@ -141,6 +137,6 @@ struct TopToolBarView: View {
 
 struct TopToolBarView_Previews: PreviewProvider {
     static var previews: some View {
-        TopToolBarView(isShowHomeCarousel: .constant(true), isShowTVShowsCarousel: .constant(false), isShowMoviesCarousel: .constant(false), isShowKidsCarousel:  .constant(false), topBannerItems: .constant(TopBannerItems.home))
+        TopToolBarView(isShowHomeCarousel: .constant(true), isShowTVShowsCarousel: .constant(false), isShowMoviesCarousel: .constant(false), isShowKidsCarousel:  .constant(false))
     }
 }

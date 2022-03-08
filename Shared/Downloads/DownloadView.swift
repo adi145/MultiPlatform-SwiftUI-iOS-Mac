@@ -19,7 +19,7 @@ struct DownloadView: View {
                         HeaderViewMac(title: "Downloads")
                     }
                 }
-                .conditionalView(isMacOS() ? true : false, title: "Downloads")
+                .conditionalNavigationTitle(isMacOS() ? true : false, title: "Downloads")
             }
         }.conditionalNavigationStyle(isMacOS())
     }

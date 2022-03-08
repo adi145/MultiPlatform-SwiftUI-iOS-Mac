@@ -58,10 +58,17 @@ struct TabViewPage: View {
                 .tabItem {
                     Image(systemName: "person.circle.fill")
                         .font(.system(size: 10)).foregroundColor(Color.accentColor)
-                    Text("My Stuff")
+                    Text("Watchlist")
                 }.tag(4)
+            
+            MyStuffView()
+                .tabItem {
+                    Image(systemName: "person.circle.fill")
+                        .font(.system(size: 10)).foregroundColor(Color.accentColor)
+                    Text("Profile")
+                }.tag(5)            
         }
-        .conditionalView(true, title: navigationTitle)
+        .conditionalNavigationTitle(true, title: navigationTitle)
         .navigationBarHidden(false)
         .navigationBarBackButtonHidden(true)
 //        .navigationBarItems(trailing: self.tabIndex == 4 ?
