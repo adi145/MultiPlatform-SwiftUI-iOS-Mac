@@ -7,7 +7,7 @@
 
 import Foundation
 import OrderedCollections
-import UIKit
+//import UIKit
 import SwiftUI
 
 let homeBanner = "Home Banner"
@@ -48,8 +48,6 @@ class MoviesListViewModel:ObservableObject {
         case .home:
             return homeMoviesList[cat] ?? []
         case .TV:
-            print("cat +++++++", cat)
-            print("list +++++++", tvShowsList[cat] ?? [])
             return tvShowsList[cat] ?? []
         case .movies:
             return moviesList[cat] ?? []
@@ -61,7 +59,7 @@ class MoviesListViewModel:ObservableObject {
             return homeMoviesList[cat] ?? []
         }
     }
-
+    
     init() {
         self.setupMoviesHome()
         self.setupMoviesForTVShows()
@@ -82,7 +80,7 @@ class MoviesListViewModel:ObservableObject {
         searchMoviesList["Thriller"] = exampleMovies.shuffled()
         searchMoviesList["Horror"] = exampleMovies.shuffled()
     }
-
+    
     func setupMoviesHome() {
         homeMoviesList[homeBanner] = exampleMovies.shuffled()
         homeMoviesList["Top movies"] = exampleMovies.shuffled()

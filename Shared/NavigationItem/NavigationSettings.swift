@@ -9,13 +9,11 @@ import Foundation
 
 enum NavigationItem {
     case main
-    case search
     case downloads
     case mystuff
     case moviesDetails
     case seeMore
     case find
-    case myStuff
     case home
     case TV
     case movies
@@ -31,5 +29,5 @@ class NavigationSettings: ObservableObject {
     @Published var isFromSeeMoreToMovieDetailsScreen: Bool = false
     @Published var isNavigateSeeMorePage: Bool = false
     var selectedNavigationItem = [NavigationItem]()
-    @Published var navigationItem: NavigationItem = .home
+    @Published var navigationItem: NavigationItem = .main
 }

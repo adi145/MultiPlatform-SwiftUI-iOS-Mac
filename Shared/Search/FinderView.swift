@@ -10,15 +10,20 @@ import Kingfisher
 
 struct FinderView: View {
     var vm = MoviesListViewModel()
-    var selectedCategory = "Top movies"
+    var category = "Top movies"
     var navigationItem : NavigationItem!
     @EnvironmentObject var settings : NavigationSettings
     #if os(iOS)
     @EnvironmentObject var orientationInfo: OrientationInfo
     #endif
     @State var gridColums: [GridItem] = []
-    @State var names = [Movie]()//["Holly", "Josh", "Rhonda", "Ted"]
+    @State var names = [Movie]()
     @State var searchText = ""
+    @State var selectedMovie: Movie = Movie()
+   
+    @Binding var findNavigationItem: NavigationItem
+    @Binding var selectedCategory: String
+    
     let columns = [
         GridItem(.flexible(), alignment: .center),
         GridItem(.flexible()),
@@ -52,7 +57,7 @@ struct FinderView: View {
     }
     
     fileprivate func returnSelectedCategory(navigationItem: NavigationItem, category: String) -> AnyView {
-        return AnyView(MoviesHome(title: category, navigationItem: navigationItem))
+        return AnyView(MoviesHome(title: category, navigationItem: navigationItem, selectedMovie: .constant(.init(id: "", title: "", url: URL(string: ""), description: "")), selectedCategory: .constant("")))
     }
     
     fileprivate func navigateToSelectedTab(_ category: String) -> AnyView {
@@ -63,20 +68,37 @@ struct FinderView: View {
         } else if category == "Kids" {
             return returnSelectedCategory(navigationItem: .kids, category: category)
         }
-        return AnyView(SeeMoreView(selectedCategory: category, navigationItem:.find))
+        return AnyView(SeeMoreView(selectedCategory: category, navigationItem:.find, selectedMovie: $selectedMovie))
     }
     
-    init() {
-        UITableView.appearance().separatorStyle = .singleLine
-        UITableViewCell.appearance().backgroundColor = UIColor(red: 13.0/255.0, green: 23.0/255.0, blue: 30.0/255.0, alpha: 1.0)
-        UITableView.appearance().backgroundColor = UIColor(red: 13.0/255.0, green: 23.0/255.0, blue: 30.0/255.0, alpha: 1.0)
+    fileprivate func navigateToSelectedTabMacos(_ category: String){
+        self.settings.selectedNavigationItem.append(.find)
+        self.selectedCategory = category
+        if category == "Movies" {
+            self.findNavigationItem = .movies
+            settings.navigationItem = .movies
+        } else if category == "TV" {
+            settings.navigationItem = .TV
+        } else if category == "Kids" {
+            settings.navigationItem = .kids
+        } else {
+            self.findNavigationItem = .find
+            settings.navigationItem = .seeMore
+        }
+//        return AnyView(SeeMoreView(selectedCategory: category, navigationItem:.find, selectedMovie: $selectedMovie))
     }
+    
+//    init() {
+////        UITableView.appearance().separatorStyle = .singleLine
+////        UITableViewCell.appearance().backgroundColor = UIColor(red: 13.0/255.0, green: 23.0/255.0, blue: 30.0/255.0, alpha: 1.0)
+////        UITableView.appearance().backgroundColor = UIColor(red: 13.0/255.0, green: 23.0/255.0, blue: 30.0/255.0, alpha: 1.0)
+//    }
     
     func getMainView() -> some View {
         vm.navigationItem = .find
         return VStack{
             if isMacOS(){
-                HeaderViewMac(title: "See more",onBackAction: backButton, isShowBackButton: true)
+                HeaderViewMac(title: "Find",onBackAction: backButton, isShowBackButton: false)
             }
             if !searchText.isEmpty {
                 List {
@@ -85,8 +107,7 @@ struct FinderView: View {
                             Text(movie.title ?? "").foregroundColor(.red)
                         }
                     }.listRowBackground(ColorTheme.bgColor.color)
-                } .listStyle(GroupedListStyle())
-                    .background(.red)
+                }
             } else {
                 ScrollView {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .center), count: getCount()), spacing: 10) {  // HERE 2
@@ -94,7 +115,7 @@ struct FinderView: View {
                             if isMacOS() {
                                 displayAllMovies(category: category)
                                     .onTapGesture {
-                                        self.settings.isFromSeeMoreToMovieDetailsScreen = true
+                                        navigateToSelectedTabMacos(category)
                                     }
                             } else {
                                 NavigationLink(destination: navigateToSelectedTab(category)){
@@ -106,7 +127,6 @@ struct FinderView: View {
                     .padding([.leading,.trailing], 16)
                 }
             }
-            
         }
     }
     
@@ -128,18 +148,9 @@ struct FinderView: View {
                 }
             }
             .conditionalNavigationTitle(isMacOS() ? true : false, title: "")
-                .onAppear {
-                    
-                }
-        }.navigationBarHidden(true)
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-//        {
-//                ForEach(searchResults, id: \.self) { result in
-//                    Text("\(result.title ?? "")").searchCompletion(result.title ?? "")
-//                               }
-//            }
-            .foregroundColor(.white)
-        
+        }
+        .searchable(text: $searchText, placement: .sidebar)
+        .foregroundColor(.white)
         .conditionalNavigationStyle(isMacOS())
     }
     
@@ -148,46 +159,6 @@ struct FinderView: View {
     }
 }
 
-extension View {
-    func conditionalNavigationTitle(_ value: Bool, title:String) -> some View {
-        self.modifier(ConditionalModifier(isBold: value, title: title))
-  }
-    func conditionalNavigationStyle(_ value: Bool) -> some View {
-        self.modifier(ConditionalNavigationStyleModifier(isMacOS: value))
-  }
-    
-}
-struct ConditionalNavigationStyleModifier: ViewModifier {
-    var isMacOS: Bool
-    func body(content: Content) -> some View {
-        Group {
-            if isMacOS {
-                content.navigationViewStyle(.automatic)
-            }else{
-               #if os(iOS)
-                content.navigationViewStyle(StackNavigationViewStyle())
-               #endif
-            }
-        }
-    }
-}
-struct ConditionalModifier: ViewModifier {
-    var isBold: Bool
-    var title: String
-    func body(content: Content) -> some View {
-    Group {
-        if self.isBold {
-            content.navigationTitle(Text(title))
-        }else{
-            #if os(iOS)
-            content.navigationBarTitle(Text(title), displayMode: .inline)
-            #endif
-          
-           #if os(tvOS)
-            content.navigationTitle(Text(title))
-             #endif
-            }
-        }
-    }
-  }
+
+
 

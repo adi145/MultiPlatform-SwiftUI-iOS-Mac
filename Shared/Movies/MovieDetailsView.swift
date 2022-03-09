@@ -11,10 +11,9 @@ import Kingfisher
 struct MovieDetailsView: View {
     @EnvironmentObject var settings : NavigationSettings
     @State var selectedMovie : Movie!
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-   #if os(iOS)
-   @EnvironmentObject var orientationInfo: OrientationInfo
-   #endif
+#if os(iOS)
+    @EnvironmentObject var orientationInfo: OrientationInfo
+#endif
     
     fileprivate func moreButton() -> some View {
         return Button(action: {
@@ -85,10 +84,10 @@ struct MovieDetailsView: View {
         if isMacOS(){
             return getRect().width/12
         } else {
-            #if os(iOS)
+#if os(iOS)
             return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width)/1.9 : (getRect().height-92)/1.5
             : orientationInfo.orientation == .portrait ? (getRect().width-92)/3 : (getRect().height-92)/5
-            #endif
+#endif
         }
         return 0
     }
@@ -97,10 +96,10 @@ struct MovieDetailsView: View {
         if isMacOS(){
             return getRect().width/6
         } else {
-           #if os(iOS)
+#if os(iOS)
             return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? getRect().width : getRect().width
             : orientationInfo.orientation == .portrait ? getRect().width-102 :  (getRect().height-92)/3.5
-           #endif
+#endif
         }
         return 0
     }
@@ -112,7 +111,6 @@ struct MovieDetailsView: View {
         } label: {
             Label("Play", systemImage: "play.fill").foregroundColor(.white)
         }.frame(minWidth: 200, idealWidth: 300, maxWidth: 414, minHeight: 40, idealHeight: 45, maxHeight: 48, alignment: .leading)
-//        .frame(width: getRect().width-32, height: 48, alignment: .leading)
             .background(.blue)
             .buttonStyle(.borderedProminent)
             .cornerRadius(5)
@@ -122,20 +120,19 @@ struct MovieDetailsView: View {
         ZStack {
             ColorTheme.bgColor.color
                 .edgesIgnoringSafeArea(.all)
-                ScrollView {
+            ScrollView {
                 if isMacOS(){
                     HeaderViewMac(title: "Movie Details",onBackAction: backButton, isShowBackButton: true)
                 }
                 //Imageview
-                    VStack {
-                        KFImage(selectedMovie.url)
-                            .resizable()
-                            .frame(width: getMovieItemWidth(), height: getMovieItemHeight(), alignment: .center)
-                        Spacer()
-                    }
-                    .padding(.vertical, 0)
-                   
-                    
+                VStack {
+                    KFImage(selectedMovie.url)
+                        .resizable()
+                        .frame(width: getMovieItemWidth(), height: getMovieItemHeight(), alignment: .center)
+                    Spacer()
+                }
+                .padding(.vertical, 0)
+                
                 VStack {
                     Text(selectedMovie.title ?? "")
                         .font(.largeTitle)
@@ -157,30 +154,25 @@ struct MovieDetailsView: View {
                     }
                     Spacer()
                         .frame(height: 15, alignment: .center)
-                    
                     Text(selectedMovie.description ?? "")
                         .font(.body)
                         .foregroundColor(.white)
                     
                 }.frame(alignment: .top)
-                        .padding([.leading, .trailing,.vertical], 16)
-
+                    .padding([.leading, .trailing,.vertical], 16)
+                
             } .conditionalNavigationTitle(isMacOS() ? true : false, title: selectedMovie.title ?? "")
-            .onAppear {
-                print(selectedMovie.title ?? "")
-            }.onDisappear {
-                presentationMode.wrappedValue.dismiss()
-            }
+                .onAppear {
+                    print(selectedMovie.title ?? "")
+                }.onDisappear {
+                    if self.settings.selectedNavigationItem.count > 0{
+                        self.settings.selectedNavigationItem.removeLast()
+                    }
+                }
         }
     }
     
     func backButton() {
-        settings.navigationItem = settings.selectedNavigationItem.last ?? .home
+        self.settings.navigationItem = self.settings.selectedNavigationItem.last ?? .main
     }
 }
-
-//struct MovieDetailsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MovieDetailsView()
-//    }
-//}

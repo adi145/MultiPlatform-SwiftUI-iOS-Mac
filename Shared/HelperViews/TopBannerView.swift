@@ -16,7 +16,7 @@ struct TopBannerView: View {
     #if os(iOS)
     @EnvironmentObject var orientationInfo: OrientationInfo
     #endif
-    @State var selectedMovie: Movie?
+    @Binding var selectedMovie: Movie
      
     fileprivate func displayMoviesWithHorizontal(movie: Movie) -> some View {
         return StandardHomeMovie(movie: movie)
@@ -27,39 +27,41 @@ struct TopBannerView: View {
 
     fileprivate func setupBannerView() -> some View {
         vm.navigationItem = navigationItem
-        return LazyHStack {
-            ForEach(vm.getMovie(forCat: selectedCategory)) { movie in
-                if isMacOS() {
-                    displayMoviesWithHorizontal(movie: movie)
-                        .onTapGesture {
-                            //                                self.selectedMovie = movie
-                            //                                self.settings.selectedNavigationItem.append(.home)
-                            //                                self.settings.navigationItem = NavigationItem.moviesDetails
-                        }
-                } else {
-                    NavigationLink(destination: MovieDetailsView(selectedMovie: movie)){
+        return ScrollView(.horizontal, showsIndicators: true) {
+            LazyHGrid(rows: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .center), count: 1), spacing: 10) {
+                ForEach(vm.getMovie(forCat: selectedCategory), id: \.self) { movie in
+                    if isMacOS() {
                         displayMoviesWithHorizontal(movie: movie)
+                            .onTapGesture {
+                                self.selectedMovie = movie
+                                self.settings.selectedNavigationItem.append(.home)
+                                self.settings.navigationItem = NavigationItem.moviesDetails
+                            }
+                    } else {
+                        NavigationLink(destination: MovieDetailsView(selectedMovie: movie)){
+                            displayMoviesWithHorizontal(movie: movie)
+                        }
                     }
                 }
             }
-        }.cornerRadius(10)
+        }.padding([.leading,.trailing], isMacOS() ? 30 : orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? 16 : 0 : 16)
     }
     
     var body: some View {
         VStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                setupBannerView()
-            }
-        }.frame(width: isMacOS() ? getRect().width-32 : getRect().width-32, height: getMovieItemHeight() ).padding(.bottom, 20)
+            setupBannerView()
+        }.frame(width: isMacOS() ? getRect().width-60 : getRect().width-32, height: getMovieItemHeight() )
+            .padding(.bottom, 20)
+            .padding([.leading,.trailing], isMacOS() ? 30 : orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? 16 : 0 : 16)
             .cornerRadius(10)
         
     }
     func getMovieItemHeight() -> CGFloat{
         if isMacOS(){
-            return (getRect().width-32)/7
+            return (getRect().width-60)/6
         } else {
           #if os(iOS)
-            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width)/1.9 : (getRect().height)/1.9 : orientationInfo.orientation == .portrait ? (getRect().width)/4 : (getRect().height)/3.5
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-32)/1.9 : (getRect().height-32)/1.9 : orientationInfo.orientation == .portrait ? (getRect().width-32)/4 : (getRect().height-32)/3.5
           #endif
         }
         return 0
@@ -68,10 +70,10 @@ struct TopBannerView: View {
     
     func getMovieItemWidth() -> CGFloat{
         if isMacOS(){
-            return (getRect().width-32)/4.2
+            return (getRect().width-60)/3.2
         } else {
           #if os(iOS)
-            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-62) :  (getRect().width-72)/2.2 : orientationInfo.orientation == .portrait ? (getRect().width-82)/2 :  (getRect().width-82)/2
+            return orientationInfo.deviceType == .iphone ? orientationInfo.orientation == .portrait ? (getRect().width-32)/1.15 :  (getRect().width-32)/2.2 : orientationInfo.orientation == .portrait ? (getRect().width-32)/2 :  (getRect().width-32)/2
           #endif
         }
         return 0

@@ -14,12 +14,13 @@ struct MoviesAppApp: App {
     var body: some Scene {
        #if os(macOS)
         WindowGroup {
-            HomePage()
+            HomePage().frame(width: 1500, height: 800)
                 .environmentObject(userSettings)
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.willUpdateNotification), perform: { _ in
                     makeWindow()
                 })
-        }
+        }.windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
+            .windowStyle(HiddenTitleBarWindowStyle())
         .commands {
             CommandGroup(replacing: .newItem, addition: {
             })
@@ -36,6 +37,7 @@ struct MoviesAppApp: App {
     func makeWindow() {
         #if os(macOS)
         for window in NSApplication.shared.windows {
+            window.styleMask.remove(.resizable)
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
             window.backgroundColor = NSColor.black

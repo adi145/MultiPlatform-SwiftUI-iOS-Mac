@@ -13,7 +13,7 @@ import AVFoundation
 struct MoviesListView: View {
     
     @EnvironmentObject var settings : NavigationSettings
-    @State var selectedCategory: String?
+    @State var selectedCategory: String
     @State var selectedMovie: Movie = Movie()
     @State var navigationItem: NavigationItem
     @State var isHomeSelected: Bool = false
@@ -24,21 +24,26 @@ struct MoviesListView: View {
     @State var isShowTVShowsCarousel: Bool = false
     @State var isShowMoviesCarousel: Bool = false
     @State var isShowKidsCarousel: Bool = false
-    #if os(iOS)
+    
+    @State var findNavigationItem: NavigationItem
+    
+    
+#if os(iOS)
     @EnvironmentObject var orientationInfo: OrientationInfo
-     #endif
+#endif
     var vm = MoviesListViewModel()
     let titleStr: String = NSLocalizedString("Movies", comment: "")
-
+    
     fileprivate func moviesList(navigationItem: NavigationItem) -> some View {
-        self.navigationItem = navigationItem
-        vm.navigationItem = navigationItem
-        return MoviesHome(title: titleStr, navigationItem: navigationItem)
+        return MoviesHome(title: titleStr, navigationItem: navigationItem, selectedMovie: $selectedMovie, selectedCategory: $selectedCategory).onAppear {
+            self.navigationItem = navigationItem
+            vm.navigationItem = navigationItem
+        }
     }
     
     @ViewBuilder
     func showHeaderAndToolBar(navigationItem: NavigationItem) -> some View{
-         VStack {
+        VStack {
             if isMacOS() {
                 HeaderViewMac(title: titleStr)
             }
@@ -47,28 +52,26 @@ struct MoviesListView: View {
         }
     }
     
-   
-   @ViewBuilder
-   func setupView() -> some View {
+    
+    @ViewBuilder
+    func setupView() -> some View {
         VStack{
             switch settings.navigationItem {
             case .find:
-                FinderView().frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
-                    .background(Color.white)
+                FinderView(findNavigationItem: $findNavigationItem, selectedCategory: $selectedCategory)
+                    .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
             case .downloads:
-                DownloadView().frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
-                    .background(Color.white)
+                DownloadView()
+                    .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
             case .mystuff:
                 MyStuffView()
                     .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
-                    .background(Color.white)
             case .seeMore:
-                SeeMoreView(selectedCategory: self.selectedCategory ?? "")
+                SeeMoreView(selectedCategory: self.selectedCategory, navigationItem:findNavigationItem, selectedMovie: $selectedMovie)
                     .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
-                    .background(Color.white)
             case .moviesDetails:
                 MovieDetailsView(selectedMovie: selectedMovie)
-                    .background(Color.white)
+                    .frame(maxWidth: isMacOS() ? getRect().width : nil, maxHeight: isMacOS() ? getRect().height : nil)
             case .home:
                 showHeaderAndToolBar(navigationItem: .home)
             case .movies:
@@ -77,7 +80,7 @@ struct MoviesListView: View {
                 showHeaderAndToolBar(navigationItem: .TV)
             case .kids:
                 showHeaderAndToolBar(navigationItem: .kids)
-            default:
+            case .main:
                 showHeaderAndToolBar(navigationItem: .main)
             }
             if isMacOS() {
@@ -85,7 +88,7 @@ struct MoviesListView: View {
             }
         }.background(ColorTheme.bgColor.color)
     }
-
+    
     var body: some View {
         NavigationView {
             setupView()

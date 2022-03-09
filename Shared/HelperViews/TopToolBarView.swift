@@ -13,7 +13,6 @@ struct TopToolBarView: View {
     @Binding var isShowMoviesCarousel: Bool
     @Binding var isShowKidsCarousel: Bool
     @EnvironmentObject var settings : NavigationSettings
-//    @Binding var topBannerItems: TopBannerItems
 
     var body: some View {
         VStack{

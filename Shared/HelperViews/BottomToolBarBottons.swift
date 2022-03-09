@@ -65,13 +65,15 @@ struct BottomToolBarBottons: View {
         self.isFinderSelected = false
         self.isDownloadsSelected = false
         self.isMyStuffSelected = false
-        self.settings.navigationItem = .home
+        self.settings.selectedNavigationItem.removeAll()
+        self.settings.navigationItem = .main
     }
     func findAction() {
         self.isHomeSelected = false
         self.isFinderSelected = true
         self.isDownloadsSelected = false
         self.isMyStuffSelected = false
+        self.settings.selectedNavigationItem.removeAll()
         self.settings.navigationItem = .find
     }
     func downloadAction() {
@@ -79,6 +81,7 @@ struct BottomToolBarBottons: View {
         self.isFinderSelected = false
         self.isDownloadsSelected = true
         self.isMyStuffSelected = false
+        self.settings.selectedNavigationItem.removeAll()
         self.settings.navigationItem = .downloads
     }
     func myStuffAction() {
@@ -86,6 +89,9 @@ struct BottomToolBarBottons: View {
         self.isFinderSelected = false
         self.isDownloadsSelected = false
         self.isMyStuffSelected = true
+        self.settings.selectedNavigationItem.removeAll()
         self.settings.navigationItem = .mystuff
     }
+    
+    
 }

@@ -37,13 +37,13 @@ struct TabViewPage: View {
                 }
             })
         return TabView(selection: selection) {
-            MoviesListView(navigationItem: .home)
+            MoviesListView(selectedCategory: "", navigationItem: .main, findNavigationItem: .find)
                 .tabItem {
                     Image(systemName: "house.fill")
                         .imageScale(.medium).foregroundColor(Color.accentColor)
                     Text("Home")
                 }.tag(1)
-            FinderView()
+            FinderView(findNavigationItem: .constant(.find), selectedCategory: .constant(""))
                 .tabItem {
                     Image(systemName: "magnifyingglass").imageScale(.medium).foregroundColor(Color.accentColor)
                     Text("Find")
